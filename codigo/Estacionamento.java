@@ -14,16 +14,13 @@ public class Estacionamento {
         this.numClientes = 0;
         this.numVagas = 0;
 
-        // Inicializa o array de clientes e de vagas
-        this.clientes = new Cliente[100]; // Tamanho inicial do array de clientes
+        this.clientes = new Cliente[100]; 
         this.vagas = new Vaga[fileiras * vagasPorFila];
 
-        // Gera as vagas do estacionamento
         gerarVagas();
     }
 
     public void addVeiculo(Veiculo veiculo, String idCli) {
-        // Encontra o cliente com o identificador idCli
         Cliente cliente = null;
         for (int i = 0; i < numClientes; i++) {
             if (clientes[i].getIdentificador().equals(idCli)) {
@@ -70,7 +67,7 @@ public class Estacionamento {
                 return valorCobrado;
             }
         }
-        return 0.0; // Placa não encontrada
+        return 0.0; 
     }
 
     public double totalArrecadado() {
