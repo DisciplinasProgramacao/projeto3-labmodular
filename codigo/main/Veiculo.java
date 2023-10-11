@@ -6,7 +6,7 @@ package main;
 public class Veiculo {
 
 	private String placa;
-	private UsoDeVaga[] usos = new UsoDeVaga[8000]; //Mudar para arrayList
+	private ArrayList<UsoDeVaga> usos = new ArrayList<UsoDeVaga>(); //Mudar para arrayList
 
 	public Veiculo(String placa) {
 		this.placa = placa;
@@ -27,12 +27,15 @@ public class Veiculo {
 		} else {
 			res = false;
 		}
-		
 		return res;
 	}
 
-	public double sair() {
-		
+	/*
+	 * Quando sair da vaga, invoca o método sair da classe Vaga
+  	 * e disponibiliza como disponivel=true;
+	 * */
+	public double sair(Vaga vaga) {
+		vaga.sair();
 	}
 
 	public double totalArrecadado() {
@@ -42,9 +45,13 @@ public class Veiculo {
 	public double arrecadadoNoMes(int mes) {
 		
 	}
-
+	
+	/*
+	 * Inclui no uso de vaga, a vaga utilizada.
+	 * */
 	public int totalDeUsos(Vaga vaga) {
-		
+		UsoDeVaga usoVaga = new UsoDeVaga(vaga);
+		this.usos.add(usoVaga);
 	}
 	
 	public String getPlaca() {
