@@ -6,6 +6,7 @@
 
 import enuns.IdentificacaoCliente;
 import interfaces.IArrecadavel;
+package main;
 
 public class Cliente implements IArrecadavel {
 
