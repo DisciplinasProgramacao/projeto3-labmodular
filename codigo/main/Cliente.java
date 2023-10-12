@@ -1,3 +1,5 @@
+package main;
+
 /*
  * Classe criada 04/10/2023
  * 
@@ -6,7 +8,6 @@
 
 import enuns.IdentificacaoCliente;
 import interfaces.IArrecadavel;
-package main;
 
 public class Cliente implements IArrecadavel {
 
