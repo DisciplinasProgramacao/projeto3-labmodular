@@ -4,12 +4,13 @@
  * Projeto3 regra aplicada por Matheus Vinicius
  */
 
-public class Cliente {
+import interfaces.IArrecadavel;
+
+public class Cliente implements IArrecadavel {
 
 	private String nome;
 	private String id;
 	private Veiculo[] veiculos = new Veiculo[100];
-
 
 	/*
 	 * Contrutores da classe Cliente
@@ -47,7 +48,10 @@ public class Cliente {
 	 * da quantidade de vagas que os veículos utilizaram
 	 */
 	public int totalDeUsos() {
-		return 0;
+		int total = 0;
+		//Percorrendo o vetor de Veiculos do cliente
+		for(Veiculo v : veiculos){ total += v.totalDeUsos(); }
+		return total;
 	}
 
 	/*
@@ -55,20 +59,30 @@ public class Cliente {
 	 * do cliente
 	 */
 	public double arrecadadoPorVeiculo(String placa) {
-		return 0.00;
+		double total = 0.0;
+		for(Veiculo v : veiculos){ 
+			if(v.getPlaca() == placa){ total = v.totalArrecadado(); }
+		}
+		return total;
 	}
 
 	/*
 	 * Retorna a soma dos valores das vagas utilizadas pelos veículos
 	 * do cliente
 	 */
+	@Override
 	public double arrecadadoTotal() {
-		return 0.00;
+		double total = 0.0;
+		for(Veiculo v : veiculos){ 
+			total += v.totalArrecadado(); 
+		}
+		return total;
 	}
 
-
+	@Override
 	public double arrecadadoNoMes(int mes) {
-		
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'arrecadadoNoMes'");
 	}
 
 }
