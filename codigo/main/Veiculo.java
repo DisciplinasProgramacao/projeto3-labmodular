@@ -3,7 +3,10 @@ package main;
  * Classe criada em 04/10/2023
  * por Gabriel Henrique
  * */
-public class Veiculo {
+
+import interface.IArrecadavel;
+
+public class Veiculo implements IArrecadavel {
 
 	private String placa;
 	private ArrayList<UsoDeVaga> usos = new ArrayList<UsoDeVaga>(); //Mudar para arrayList
@@ -17,7 +20,6 @@ public class Veiculo {
 	 * */
 	public void estacionar(Vaga vaga) {
 		boolean res = true;
-		
 		if(vaga.disponivel()) {
 			try {
 				vaga.estacionar();
@@ -34,12 +36,22 @@ public class Veiculo {
 	 * Quando sair da vaga, invoca o método sair da classe Vaga
   	 * e disponibiliza como disponivel=true;
 	 * */
-	public double sair(Vaga vaga) {
-		vaga.sair();
+	public boolean sair(Vaga vaga) {
+		boolean res = true;
+		try {
+			vaga.sair();
+		} catch(Exception e) {
+			res = false;
+		}
+		return res;
 	}
 
 	public double totalArrecadado() {
-		
+		double total = 0.0;
+		for(UsoDeVaga uv : usos) {
+			total += uv.getValorPago();
+		}
+		return total;
 	}
 
 	public double arrecadadoNoMes(int mes) {
