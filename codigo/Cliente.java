@@ -4,12 +4,14 @@
  * Projeto3 regra aplicada por Matheus Vinicius
  */
 
+import enuns.IdentificacaoCliente;
 import interfaces.IArrecadavel;
 
 public class Cliente implements IArrecadavel {
 
 	private String nome;
 	private String id;
+	private IdentificacaoCliente identificado;
 	private Veiculo[] veiculos = new Veiculo[100];
 
 	/*
@@ -19,11 +21,13 @@ public class Cliente implements IArrecadavel {
 	 * nome como anônimo
 	 */
 	public Cliente(String nome, String id) {
+		this.identificado = IdentificacaoCliente.IDENTIFICADO;
 		this.nome = nome;
 		this.id = id;
 	}
 
 	public Cliente(String id) {
+		this.identificado = IdentificacaoCliente.NAO_IDENTIFICADO;
 		this.nome = "anônimo";
 		this.id = id;
 	}
@@ -35,10 +39,14 @@ public class Cliente implements IArrecadavel {
 		this.veiculos[veiculos.length + 1] = veiculo;
 	}
 
+	public boolean validarVeiculo(Veiculo v){
+		return v != null;
+	}
+
 	public boolean possuiVeiculo(String placa) {
 		boolean status = false;
 		for(Veiculo veiculo : veiculos){
-			if(veiculo.getPlaca() == placa){ status = true; }// getPlaca vai ser criado no veiculo
+			if(validarVeiculo(veiculo) && veiculo.getPlaca() == placa){ status = true; }// getPlaca vai ser criado no veiculo
 		}
 		return status;
 	}
@@ -50,7 +58,11 @@ public class Cliente implements IArrecadavel {
 	public int totalDeUsos() {
 		int total = 0;
 		//Percorrendo o vetor de Veiculos do cliente
-		for(Veiculo v : veiculos){ total += v.totalDeUsos(); }
+		for(Veiculo v : veiculos){ 
+			if(validarVeiculo(v)){
+				total += v.totalDeUsos(); 
+			}
+		}
 		return total;
 	}
 
@@ -61,7 +73,7 @@ public class Cliente implements IArrecadavel {
 	public double arrecadadoPorVeiculo(String placa) {
 		double total = 0.0;
 		for(Veiculo v : veiculos){ 
-			if(v.getPlaca() == placa){ total = v.totalArrecadado(); }
+			if(validarVeiculo(v) && v.getPlaca() == placa){ total = v.totalArrecadado(); }
 		}
 		return total;
 	}
