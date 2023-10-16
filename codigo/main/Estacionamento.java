@@ -5,7 +5,6 @@ import java.util.Random;
 public class Estacionamento {
 
 	private String nome;
-	
 	private Cliente[] id;
 	private Vaga[] vagas;
 	private int quantFileiras;
@@ -22,13 +21,16 @@ public class Estacionamento {
 	}
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {
-	if(idCli.equals(id.getId()));{
-		id.addVeiculo(veiculo);
-	}else{
-		System.out.println("Cliente nao encontrado não foi possivel adicionar o veiculo");
+	for(int i=0;i<quantClientes;i++){
+		if(id[i].getId().equals(idCli)){
+		   id[i].addVeiculo(veiculo);
+		}
 	}
 
-	}
+	System.out.println("Cliente nao encontrado não foi possivel adicionar o veiculo");
+
+
+}
 
 	public void addCliente(Cliente cliente) {
 	if(quantClientes<id.length){
