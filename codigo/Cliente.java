@@ -14,7 +14,7 @@ public class Cliente {
 		
 	}
 
-	public Veiculo possuiVeiculo(String placa) {
+	public boolean possuiVeiculo(String placa) {
 		
 	}
 
