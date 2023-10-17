@@ -10,15 +10,15 @@ public class Vaga {
 	}
 
 	public boolean estacionar() {
-		
+    return true;
 	}
 
 	public boolean sair() {
-		
+		return true;
 	}
 
 	public boolean disponivel() {
-		
+		return true;
 	}
 
 }

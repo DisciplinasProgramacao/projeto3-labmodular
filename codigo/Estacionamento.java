@@ -7,7 +7,7 @@ public class Estacionamento {
 	private String nome;
 	
 	private Cliente[] id;
-	private Vaga[] vagas;
+	private Vaga1[] vagas;
 	private int quantFileiras;
 	private int vagasPorFileira;
 	private int quantClientes=0;
@@ -18,7 +18,7 @@ public class Estacionamento {
 		this.nome=nome;
 		this.quantFileiras=fileiras;
 		this.vagasPorFileira=vagasPorFila;
-	    vagas=new Vaga[quantVagas];	
+	    vagas=new Vaga1[quantVagas];	
 	}
 
 	public void addVeiculo(Veiculo veiculo, String idCli) {
@@ -46,7 +46,7 @@ public class Estacionamento {
 	Random ale= new Random();
 	int numeroVaga=ale.nextInt(quantVagas);
 	char letraVaga=(char)('a'+ale.nextInt(26));
-      Vaga nova= new Vaga(letraVaga,numeroVaga);
+      Vaga1 nova= new Vaga1(letraVaga,numeroVaga);
 	  vagas[quantVagas]=nova;
 	  quantVagas++;
 	  System.out.println("Nova vaga criada numero "+numeroVaga+"posição da vaga "+letraVaga);
@@ -59,7 +59,7 @@ public class Estacionamento {
 		if(id[i].possuiVeiculo(placa)==true){
 			for(int j=0;j<quantVagas;j++){
 				if(vagas[j].disponivel()==true){
-					Vaga disponivel= vagas[j];
+					Vaga1 disponivel= vagas[j];
 					UsoDeVaga nova = new UsoDeVaga(disponivel);
 					disponivel.estacionar();
 				}

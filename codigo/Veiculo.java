@@ -9,7 +9,7 @@ public class Veiculo {
 		
 	}
 
-	public void estacionar(Vaga vaga) {
+	public void estacionar(Vaga1 vaga) {
 		
 	}
 
