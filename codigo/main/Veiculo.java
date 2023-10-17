@@ -4,7 +4,7 @@ package main;
  * por Gabriel Henrique
  * */
 
-import interface.IArrecadavel;
+import interfaces.IArrecadavel;
 
 public class Veiculo implements IArrecadavel {
 
@@ -18,7 +18,7 @@ public class Veiculo implements IArrecadavel {
 	/*
 	 * Quando estacionar, muda o status da vaga para disponivel=false..
 	 * */
-	public void estacionar(Vaga vaga) {
+	public boolean estacionar(Vaga vaga) {
 		boolean res = true;
 		if(vaga.disponivel()) {
 			try {
@@ -46,6 +46,7 @@ public class Veiculo implements IArrecadavel {
 		return res;
 	}
 
+	@Override
 	public double totalArrecadado() {
 		double total = 0.0;
 		for(UsoDeVaga uv : usos) {
@@ -53,7 +54,8 @@ public class Veiculo implements IArrecadavel {
 		}
 		return total;
 	}
-
+	
+	@Override
 	public double arrecadadoNoMes(int mes) {
 		
 	}
