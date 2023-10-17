@@ -4,8 +4,8 @@ package main;
  * por Gabriel Henrique
  * */
 
-import interface.IArrecadavel;
-
+import interfaces.IArrecadavel;
+import java.utils.ArrayList
 public class Veiculo implements IArrecadavel {
 
 	private String placa;
