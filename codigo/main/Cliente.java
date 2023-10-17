@@ -96,4 +96,5 @@ public class Cliente implements IArrecadavel {
 	public double arrecadadoNoMes(int mes) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'arrecadadoNoMes'");
+	}
 }
