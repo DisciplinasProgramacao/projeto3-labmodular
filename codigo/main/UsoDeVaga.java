@@ -1,4 +1,3 @@
-package main;
 import java.time.LocalDateTime;
 import java.time.Duration;
  public class UsoDeVaga {
@@ -10,6 +9,7 @@ import java.time.Duration;
 	private LocalDateTime entrada;
 	private LocalDateTime saida;
 	private double valorPago;
+	private Servicos serviço;
 
 	public UsoDeVaga(Vaga vaga) {
 		this.vaga= vaga;
@@ -20,7 +20,6 @@ import java.time.Duration;
           vaga.estacionar();
 		}
 	}
-
 	public double sair() {
 	  this.saida=LocalDateTime.now();
 	  Duration duracao=Duration.between(this.entrada,saida);
@@ -29,13 +28,16 @@ import java.time.Duration;
 	  double tempoDeUso=hora+minutos;
 	  return tempoDeUso/FRACAO_USO;
 	}
+	public void fornecerServiço(String tipo){
+      this.serviço= new Servicos(tipo);
+	}
 
 	public double valorPago() {
 		valorPago=this.sair()*VALOR_FRACAO;
 		if(valorPago>VALOR_MAXIMO){
            valorPago=VALOR_MAXIMO;
 		}
-		return valorPago;
+		return valorPago+serviço.valorServico();
 	}
 
 }
