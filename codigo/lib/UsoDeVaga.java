@@ -9,26 +9,28 @@ import java.time.Duration;
 	private LocalDateTime entrada;
 	private LocalDateTime saida;
 	private double valorPago;
+	private Servicos serviço;
 
-	public UsoDeVaga(Vaga vaga1) {
-		this.vaga= vaga1;
+	public UsoDeVaga(Vaga vaga) {
+		this.vaga= vaga;
 		this.entrada=LocalDateTime.now();
 		this.saida= null;
 		this.valorPago=0;
 		if(this.vaga.disponivel()==true){
-          this.vaga.estacionar();
+          vaga.estacionar();
 		}
 	}
-
 	public double sair() {
 	  this.saida=LocalDateTime.now();
 	  Duration duracao=Duration.between(this.entrada,saida);
 	  long hora=duracao.toHours();
 	  long minutos=duracao.toMinutes()/60;
 	  double tempoDeUso=hora+minutos;
-	  System.out.println("O tempo de uso foi "+tempoDeUso);
 	  return tempoDeUso/FRACAO_USO;
-	  
+	}
+	public Servicos fornecerServiço(String tipo){
+      this.serviço= new Servicos(tipo);
+	  return serviço;
 	}
 
 	public double valorPago() {
@@ -36,7 +38,10 @@ import java.time.Duration;
 		if(valorPago>VALOR_MAXIMO){
            valorPago=VALOR_MAXIMO;
 		}
-		return valorPago;
+		return valorPago+serviço.valorServico();
+	}
+	public Servicos getServicos(){
+		return serviço;
 	}
 
 }

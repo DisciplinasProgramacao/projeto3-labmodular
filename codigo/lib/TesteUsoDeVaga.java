@@ -3,28 +3,25 @@ import org.junit.Test;
 
 public class TesteUsoDeVaga {
     Vaga teste= new Vaga('B', 01);
-    Vaga error= new Vaga('A', 02);
     UsoDeVaga A = new UsoDeVaga(teste);
-    UsoDeVaga erro= new UsoDeVaga(error); 
-    @Test   
+    @Test
     public void teste1sair(){
-    A.sair();
+      assert (A.sair()>=0);
     }
     @Test
-    public void testeSair2(){
-        teste.sair();
-        erro.sair();
+    public void testeFornecerServiço(){
+        String m="MANOBRISTA";
+        A.fornecerServiço(m);
+        Servicos b = new Servicos(m);
+        assert (A.fornecerServiço(m).toString().equals(b.toString()));
     }
-
     @Test
     public void testeValorPago(){
-      A.valorPago();
+        Vaga nova = new Vaga('A', 3);
+        UsoDeVaga n= new UsoDeVaga(nova);
+        n.fornecerServiço("LAVAGEM");
+        n.sair();
+        n.valorPago();
+        assert(n.valorPago()>=20);
     }
-
-    @Test
-    public void testeValorPago2(){
-        if(erro.valorPago()<50){
-        }
-    }
-    }
-
+}
