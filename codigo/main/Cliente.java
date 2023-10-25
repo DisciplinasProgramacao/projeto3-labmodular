@@ -5,6 +5,8 @@ package main;
  * Projeto3 regra aplicada por Matheus Vinicius
  */
 
+import java.util.ArrayList;
+
 import enuns.IdentificacaoCliente;
 import interfaces.IArrecadavel;
 
@@ -13,7 +15,7 @@ public class Cliente implements IArrecadavel {
 	private String nome;
 	private String id;
 	private IdentificacaoCliente identificado;
-	private Veiculo[] veiculos = new Veiculo[100];
+	private ArrayList<Veiculo> veiculos = new ArrayList<Veiculo>();
 
 	/*
 	 * Contrutores da classe Cliente
@@ -37,13 +39,20 @@ public class Cliente implements IArrecadavel {
 	 * Adiciona um novo veiculo ao vetor de veiculos
 	 */
 	public void addVeiculo(Veiculo veiculo) {
-		this.veiculos[veiculos.length + 1] = veiculo;
+		veiculo.temDono();
+		veiculos.add(veiculo);
 	}
 
+	/*
+	 * Retorna se o veiculo é diferente de null
+	 */
 	public boolean validarVeiculo(Veiculo v){
 		return v != null;
 	}
 
+	/*
+	 * Retorna se o cliente possui veiculo se baseando na placa
+	 */
 	public boolean possuiVeiculo(String placa) {
 		boolean status = false;
 		for(Veiculo veiculo : veiculos){
@@ -61,7 +70,7 @@ public class Cliente implements IArrecadavel {
 		//Percorrendo o vetor de Veiculos do cliente
 		for(Veiculo v : veiculos){ 
 			if(validarVeiculo(v)){
-				total += v.totalDeUsos(); 
+				total += v.getUsosCount();
 			}
 		}
 		return total;
@@ -94,6 +103,74 @@ public class Cliente implements IArrecadavel {
 
 	@Override
 	public double arrecadadoNoMes(int mes) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'arrecadadoNoMes'");
+		double total = 0.0;
+		for(Veiculo v : veiculos){ 
+			for(UsoDeVaga u : v.getUsos()){
+				if(u.getMesEntrada() == mes){ total += u.valorPago();  }
+			}
+		}
+		return total;
+	}
+
+	//RELATORIOS
+	public String usoDeEstacionamento(String estacionamento){
+		StringBuilder b = new StringBuilder();
+
+		for(Veiculo v : veiculos){ 
+			for(UsoDeVaga u : v.getUsos()){
+				if(v.getUsosCount() > 0 && u.getVaga().getNomeEstacionamento() == estacionamento){
+					b.append(u.getVaga().getNomeEstacionamento() + " - " + u.getData());
+				}
+			}
+		}
+		return b.toString();
+	}
+
+	/*
+	 * Retorna todos os veiculos do cliente
+	 * 
+	 */
+	public int getVeiculosCount(){
+		return this.veiculos.size();
+	}
+
+	/*
+	 * Retorna a quantidade de veiculos que não estão estacionados
+	 */
+	public int getVeiculosValidosCount(){
+		int total = 0;
+		for(Veiculo v : veiculos){
+			/*
+			 *passa apenas os que não foram estacionados
+			 *status = false
+			 */
+			if(!v.getStatus()){ total++; }
+		}
+		return total;
+	}
+
+	public ArrayList<Veiculo> getVeiculos(){
+		return this.veiculos;
+	}
+
+	public String getId(){
+		return this.id;
+	}
+
+	public String getNome(){
+		return this.nome;
+	}
+
+	public Veiculo getVeiculo(String placa){
+		Veiculo ve = null;
+		for(Veiculo v: veiculos){
+			if(v.getPlaca() == placa){ ve = v; }
+		}
+		return ve;
+	}
+
+	@Override
+	public String toString(){
+		return this.nome + " - " + this.id; 
+	}
 }
