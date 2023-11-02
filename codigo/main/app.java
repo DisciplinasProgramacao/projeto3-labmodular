@@ -2,7 +2,6 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -275,6 +274,7 @@ public class app {
                 int selecao6 = s.nextInt();
                 Veiculo v2 = veiculosTemp1.get(selecao6);
                 System.out.println("Total pago pelo cliente: " + e2.sair(v2.getPlaca()) + " ");
+                v2.changeFalse();
                 menu();
                 break;
             case 5:

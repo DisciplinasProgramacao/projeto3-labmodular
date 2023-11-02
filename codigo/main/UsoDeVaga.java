@@ -1,5 +1,6 @@
 package main;
 import java.time.LocalDateTime;
+
 import java.time.Duration;
  public class UsoDeVaga {
 
@@ -10,15 +11,22 @@ import java.time.Duration;
 	private LocalDateTime entrada;
 	private LocalDateTime saida;
 	private double valorPago;
+	private boolean status = false;
+	private Servicos serviço;
 
 	public UsoDeVaga(Vaga vaga) {
 		this.vaga= vaga;
 		this.entrada=LocalDateTime.now();
 		this.saida= null;
 		this.valorPago=0;
-		if(this.vaga.disponivel()==true){
-          vaga.estacionar();
-		}
+	}
+
+	public UsoDeVaga(Vaga vaga, Servicos serv){
+		this.vaga= vaga;
+		this.entrada=LocalDateTime.now();
+		this.saida= null;
+		this.valorPago=0;
+		this.serviço = serv;
 	}
 
 	public double sair() {
@@ -27,7 +35,16 @@ import java.time.Duration;
 	  long hora=duracao.toHours();
 	  long minutos=duracao.toMinutes()/60;
 	  double tempoDeUso=hora+minutos;
-	  return tempoDeUso/FRACAO_USO;
+	  if(tempoDeUso < serviço.tempoMin()){
+		System.out.print("\nO veiculo não ficou tempo suficiente para concluir o serviço, nenhum valor foi cobrado");
+		return -1.0;
+	  }
+	  this.status = true;
+	  if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
+		return VALOR_MAXIMO;
+	  }else{
+		return tempoDeUso/FRACAO_USO;
+	  }
 	}
 
 	public double valorPago() {
@@ -35,7 +52,23 @@ import java.time.Duration;
 		if(valorPago>VALOR_MAXIMO){
            valorPago=VALOR_MAXIMO;
 		}
-		return valorPago;
+		if(valorPago < 0){  return 0.0; }
+		else{ return valorPago + serviço.valorServico(); }
 	}
 
+	public int getMesEntrada(){
+		return this.entrada.getMonthValue();
+	}
+
+	public Vaga getVaga(){
+		return this.vaga;
+	}
+
+	public String getData(){
+		return this.entrada.toString();
+	}
+
+	public boolean getStatus(){
+		return this.status;
+	}
 }
