@@ -1,141 +1,143 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Estacionamento {
 
 	private String nome;
-	private Cliente[] id;
-	private Vaga[] vagas;
+	private Map<Integer, Cliente> clientes = new HashMap<Integer, Cliente>(200);
+	private Map<Integer, Vaga> vagas = new HashMap<Integer, Vaga>(200);;
 	private int quantFileiras;
 	private int vagasPorFileira;
-	private int quantClientes=0;
-    private int quantVagas=quantFileiras*vagasPorFileira;
+    private int quantVagas;
 
 	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
-		id=new Cliente[100];
 		this.nome=nome;
 		this.quantFileiras=fileiras;
 		this.vagasPorFileira=vagasPorFila;
-	    vagas=new Vaga[quantVagas];	
+		this.quantVagas = quantFileiras*vagasPorFileira;	
+		gerarVagas();
 	}
-
-	public void addVeiculo(Veiculo veiculo, String idCli) {
-	for(int i=0;i<quantClientes;i++){
-		if(id[i].getId().equals(idCli)){
-		   id[i].addVeiculo(veiculo);
-		}
-	}
-
-	System.out.println("Cliente nao encontrado não foi possivel adicionar o veiculo");
-
-
-}
 
 	public void addCliente(Cliente cliente) {
-	if(quantClientes<id.length){
-		id[quantClientes]=cliente;
-		quantClientes++;
-	}
-	System.out.println("O cliente "+cliente.getNome()+" foi adicionado ");
+		try {
+            clientes.put(cliente.hashCode(), cliente);
+        } catch (Exception e) {
+            throw(e);
+        }
 	}
 
 	private void gerarVagas() {
-	if(quantVagas<vagas.length){
-	Random ale= new Random();
-	int numeroVaga=ale.nextInt(quantVagas);
-	char letraVaga=(char)('a'+ale.nextInt(26));
-      Vaga nova= new Vaga(letraVaga,numeroVaga);
-	  vagas[quantVagas]=nova;
-	  quantVagas++;
-	  System.out.println("Nova vaga criada numero "+numeroVaga+"posição da vaga "+letraVaga);
-	}
-	
-	}
-
-	public void estacionar(String placa) {
-    for(int i=0;i<quantClientes;i++){
-		if(id[i].possuiVeiculo(placa)==true){
-			for(int j=0;j<quantVagas;j++){
-				if(vagas[j].disponivel()==true){
-					Vaga disponivel= vagas[j];
-					UsoDeVaga nova = new UsoDeVaga(disponivel);
-					disponivel.estacionar();
-				}
-			}
-			
+		for(int i=0; i < quantVagas; i++){
+			Random ale= new Random();
+			int numeroVaga=ale.nextInt(quantVagas);
+			char letraVaga=(char)('a'+ale.nextInt(26));
+			Vaga nova= new Vaga(letraVaga,numeroVaga, this.nome);
+			vagas.put(hashCode(), nova);
 		}
 	}
+
+	public void estacionar(String placa) {                                        
+		for(var entryClientes : clientes.entrySet()){
+            Cliente valueCliente = entryClientes.getValue(); // Atribui o value do getValue a uma variável para ficar mais facil de trabalhar
+			if(valueCliente.possuiVeiculo(placa)){
+				for (var entryVagas : vagas.entrySet()) {
+                    if(entryVagas.getValue().disponivel()){
+                        Vaga valueVagaDisp = entryVagas.getValue();
+                        valueCliente.getVeiculo(placa).estacionar(valueVagaDisp);
+                        break;
+                    }
+                }
+			}
+		}
 	}
 
-public double sair(String placa) {
-        for (int i = 0; i < numVagas; i++) {
-            if (vagas[i].getPlaca().equals(placa)) {
-                double valorCobrado = vagas[i].sair();
-                return valorCobrado;
-            }
-        }
-        return 0.0; 
-    }
-
-    public double totalArrecadado() {
-        double total = 0.0;
-        for (int i = 0; i < numVagas; i++) {
-            total += vagas[i].getValorArrecadado();
-        }
-        return total;
-    }
-
-    public double arrecadacaoNoMes(int mes) {
-        double totalMes = 0.0;
-        for (int i = 0; i < numVagas; i++) {
-            if (vagas[i].getMes() == mes) {
-                totalMes += vagas[i].getValorArrecadado();
-            }
-        }
-        return totalMes;
-    }
-
-    public double valorMedioPorUso() {
-        if (numVagas > 0) {
-            return totalArrecadado() / numVagas;
-        }
-        return 0.0;
-    }
-
-    public String top5Clientes(int mes) {
-        Map<String, Double> arrecadacaoClientes = new HashMap<>();
-
-        for (int i = 0; i < numVagas; i++) {
-            Vaga vaga = vagas[i];
-            if (vaga.getMes() == mes) {
-                String identificadorCliente = vaga.getIdCliente();
-                double valorArrecadado = vaga.getValorArrecadado();
-
-                if (arrecadacaoClientes.containsKey(identificadorCliente)) {
-                    valorArrecadacao += arrecadacaoClientes.get(identificadorCliente);
+	public void estacionar(String placa, Servicos serv) {
+		for(var entryClientes : clientes.entrySet()){
+            Cliente valueCliente = entryClientes.getValue(); // Atribui o value do getValue a uma variável para ficar mais facil de trabalhar
+			if(valueCliente.possuiVeiculo(placa)){
+				for (var entryVagas : vagas.entrySet()) {
+                    if(entryVagas.getValue().disponivel()){
+                        Vaga valueVagaDisp = entryVagas.getValue();
+                        valueCliente.getVeiculo(placa).estacionar(valueVagaDisp, serv);
+                        break;
+                    }
                 }
+			}
+		}
+	}
 
-                arrecadacaoClientes.put(identificadorCliente, valorArrecadacao);
-            }
+	public List<Cliente> getClientes(){
+        List<Cliente> listaCliente = new ArrayList<Cliente>(this.clientes.values());
+		return listaCliente;
+	}
+
+
+	public double sair(String placa) {
+		double total = 0d;
+		for(var entryClientes : clientes.entrySet()){
+			if(entryClientes.getValue().possuiVeiculo(placa)){
+                Cliente value = entryClientes.getValue();
+				for(UsoDeVaga uv : value.getVeiculo(placa).getUsos()){
+					if(!uv.getStatus()){ 
+						total = uv.valorPago();
+						if(total > 0){
+							uv.sair();
+							uv.getVaga().sair();
+						}
+					}
+				}
+			}
+		}
+		return total;
+	}
+
+	public double totalArrecadado() {
+        double totalCliente = 0;
+
+        for(var entryClientes : clientes.entrySet()){
+            totalCliente += entryClientes.getValue().arrecadadoTotal();
         }
+        
+        return totalCliente;
+        
+	}
 
-        List<Map.Entry<String, Double>> topClientes = arrecadacaoClientes
-                .entrySet()
-                .stream()
-                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-                .limit(5)
-                .collect(Collectors.toList());
+	//public double arrecadacaoNoMes(int mes) {}
 
-        StringBuilder top5 = new StringBuilder();
-        for (Map.Entry<String, Double> entry : topClientes) {
-            String idCliente = entry.getKey();
-            double valorArrecadado = entry.getValue();
-            top5.append("Cliente: ").append(idCliente).append(", Arrecadação: R$").append(valorArrecadado).append("\n");
+	public double valorMedioPorUso() {
+        double mediaPorUso = 0;
+        try{
+            mediaPorUso = totalArrecadado()/clientes.size();
+        }catch(Exception e){
+            mediaPorUso = 0;
         }
+		return mediaPorUso;
+	}
 
-        return top5.toString();
+	//public String top5Clientes(int mes) {}
+
+	@Override
+	public String toString(){
+		return this.nome;
+	}
+
+    public String toStringClientes(){
+        StringBuilder b = new StringBuilder();
+
+        for(var entryClientes : clientes.entrySet()){
+            b.append(entryClientes.getValue().toString());
+        }
+        return b.toString();
     }
-}
+
+	public Map<Integer, Vaga> getVagas(){
+		return this.vagas;
+	}
 
 }
