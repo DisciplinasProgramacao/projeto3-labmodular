@@ -2,7 +2,6 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -112,10 +111,10 @@ public class app {
                 menu();
                 break;
              case 2:
-                System.out.println("Selecione(1-janeiro e assim por diante)");
-                int mes = s.nextInt();
-                total = est.arrecadacaoNoMes(mes);
-                System.out.println(total);
+                // System.out.println("Selecione(1-janeiro e assim por diante)");
+                // int mes = s.nextInt();
+                // total = est.arrecadacaoNoMes(mes);
+                // System.out.println(total);
                 menu();
                 break;
              case 3:
@@ -124,9 +123,9 @@ public class app {
                 menu();
                 break;
             case 4:
-                System.out.println("Selecione(1-janeiro e assim por diante)");
-                int mes1 = s.nextInt();
-                System.out.println(est.top5Clientes(mes1));
+                // System.out.println("Selecione(1-janeiro e assim por diante)");
+                // int mes1 = s.nextInt();
+                // System.out.println(est.top5Clientes(mes1));
                 menu();
                 break;
         }
@@ -157,22 +156,24 @@ public class app {
                 menu();
                 break;
             case 2:
+                System.out.print("Para qual cliente?\n\n");
+                for(int i = 0; i< clientes.size(); i++){
+                    System.out.println(i + "- " + clientes.get(i).toString());
+                }
+
+                int selecao1 = s.nextInt();
+                Cliente c = clientes.get(selecao1);
+
                 System.out.print("Qual veiculo deseja adicionar?\n\n");
 
                 for(int i = 0; i< veiculos.size(); i++){
-                    if(!veiculos.get(i).getTemDono()){ System.out.println(i + "- " + veiculos.get(i).getPlaca()); }
+                    System.out.println(i + "- " + veiculos.get(i).getPlaca());
                 }
 
                 int selecao = s.nextInt();
                 Veiculo v = veiculos.get(selecao);
 
-                System.out.print("Para qual cliente?\n\n");
-                for(int i = 0; i< clientes.size(); i++){
-                    System.out.println(i + "- " + clientes.get(i).getNome());
-                }
-
-                int selecao1 = s.nextInt();
-                Cliente c = clientes.get(selecao1);
+                
                 c.addVeiculo(v);
 
                 menu();
@@ -190,27 +191,20 @@ public class app {
                 System.out.print("Qual cliente?\n\n");
 
                 for(int i = 0; i< e1.getClientes().size(); i++){
-                    System.out.println(i + "- " + e1.getClientes().get(i).getNome());
+                    System.out.println(i + "- " + e1.getClientes().get(i).toString());
                 }
 
                 int selecao2 = s.nextInt();
                 Cliente c1 = e1.getClientes().get(selecao2);
 
+                System.out.print("Qual veiculo? (-1 para cancelar)\n\n");
+                System.out.println(c1.imprimirVeiculos());
 
-                if(c1.getVeiculosValidosCount() <= 0){ menu(); }
-                ArrayList<Veiculo> veiculosTemp = null;
-                System.out.print("Qual veiculo?\n\n");
-                for(int i = 0; i< c1.getVeiculos().size(); i++){
-                    veiculosTemp = c1.getVeiculos();
-                    for(int j = 0; j < veiculosTemp.size(); j++){
-                        if(!veiculosTemp.get(j).getStatus()){
-                            System.out.println(i + "- " + veiculosTemp.get(j).getPlaca());
-                        }
-                    }
-                }
+                int s1 = s.nextInt();
 
-                int selecao3 = s.nextInt();
-                Veiculo v1 = veiculosTemp.get(selecao3);
+                if(s1 == -1){ menu(); }
+                
+                Veiculo v1 = c1.getVeiculo(s1);
 
                 System.out.print("Quer algum serviço?\n\n");
                 System.out.print("  1-Manobrista?\n");
@@ -253,7 +247,7 @@ public class app {
 
                 for(int i = 0; i< e2.getClientes().size(); i++){
                     if(e2.getClientes().get(i).getVeiculosCount() > 0){
-                        System.out.println(i + "- " + e2.getClientes().get(i).getNome());
+                        System.out.println(i + "- " + e2.getClientes().get(i).toString());
                     }
                 }
 
@@ -261,19 +255,13 @@ public class app {
                 Cliente c2 = e2.getClientes().get(selecao5);
 
                 if(c2.getVeiculosCount() <= 0){ menu(); }
-                ArrayList<Veiculo> veiculosTemp1 = null;
+            
                 System.out.print("Qual veiculo?\n\n");
-                for(int i = 0; i< c2.getVeiculos().size(); i++){
-                    veiculosTemp1 = c2.getVeiculos();
-                    for(int j = 0; j < veiculosTemp1.size(); j++){
-                        if(veiculosTemp1.get(j).getStatus()){
-                            System.out.println(i + "- " + veiculosTemp1.get(j).getPlaca());
-                        }
-                    }
-                }
+                System.out.println(c2.imprimirVeiculos());
 
                 int selecao6 = s.nextInt();
-                Veiculo v2 = veiculosTemp1.get(selecao6);
+                Veiculo v2 = c2.getVeiculo(selecao6);
+
                 System.out.println("Total pago pelo cliente: " + e2.sair(v2.getPlaca()) + " ");
                 menu();
                 break;
@@ -290,7 +278,7 @@ public class app {
 
                 for(int i = 0; i< e3.getClientes().size(); i++){
                     if(e3.getClientes().get(i).getVeiculosCount() > 0){
-                        System.out.println(i + "- " + e3.getClientes().get(i).getNome());
+                        System.out.println(i + "- " + e3.getClientes().get(i).toString());
                     }
                 }
 
@@ -315,7 +303,7 @@ public class app {
 
                 for(int i = 0; i< est.getClientes().size(); i++){
                     if(est.getClientes().get(i).getVeiculosCount() > 0){
-                        System.out.println(i + "- " + est.getClientes().get(i).getNome());
+                        System.out.println(i + "- " + est.getClientes().get(i).toString());
                     }
                 }
 
@@ -354,7 +342,7 @@ public class app {
                 System.out.println("Qual cliente?\n\n");
 
                 for(int i = 0; i< clientes.size(); i++){
-                    System.out.println(i + "- " + clientes.get(i).getNome());
+                    System.out.println(clientes.get(i).toString());
                 }
 
                 int selecao2 = s.nextInt();
@@ -412,7 +400,7 @@ public class app {
         Cliente c = new Cliente(nome, id);
 
         bw.newLine();
-        bw.write(c.getNome()+";"+c.getId());
+        bw.write(c.toString());
         bw.close();
         clientes.add(c);
 

@@ -1,4 +1,5 @@
 package main;
+
 /*
  * Classe criada 04/10/2023
  * 
@@ -39,15 +40,9 @@ public class Cliente implements IArrecadavel {
 	 * Adiciona um novo veiculo ao vetor de veiculos
 	 */
 	public void addVeiculo(Veiculo veiculo) {
-		veiculo.temDono();
-		veiculos.add(veiculo);
-	}
-
-	/*
-	 * Retorna se o veiculo é diferente de null
-	 */
-	public boolean validarVeiculo(Veiculo v){
-		return v != null;
+		if(!this.possuiVeiculo(veiculo.getPlaca())){
+			veiculos.add(veiculo);
+		}
 	}
 
 	/*
@@ -56,7 +51,7 @@ public class Cliente implements IArrecadavel {
 	public boolean possuiVeiculo(String placa) {
 		boolean status = false;
 		for(Veiculo veiculo : veiculos){
-			if(validarVeiculo(veiculo) && veiculo.getPlaca() == placa){ status = true; }// getPlaca vai ser criado no veiculo
+			if(veiculo.getPlaca() == placa){ status = true; }// getPlaca vai ser criado no veiculo
 		}
 		return status;
 	}
@@ -69,9 +64,7 @@ public class Cliente implements IArrecadavel {
 		int total = 0;
 		//Percorrendo o vetor de Veiculos do cliente
 		for(Veiculo v : veiculos){ 
-			if(validarVeiculo(v)){
-				total += v.getUsosCount();
-			}
+			total += v.getUsosCount();
 		}
 		return total;
 	}
@@ -83,7 +76,7 @@ public class Cliente implements IArrecadavel {
 	public double arrecadadoPorVeiculo(String placa) {
 		double total = 0.0;
 		for(Veiculo v : veiculos){ 
-			if(validarVeiculo(v) && v.getPlaca() == placa){ total = v.totalArrecadado(); }
+			if(v.getPlaca() == placa){ total = v.totalArrecadado(); }
 		}
 		return total;
 	}
@@ -134,31 +127,14 @@ public class Cliente implements IArrecadavel {
 		return this.veiculos.size();
 	}
 
-	/*
-	 * Retorna a quantidade de veiculos que não estão estacionados
-	 */
-	public int getVeiculosValidosCount(){
-		int total = 0;
-		for(Veiculo v : veiculos){
-			/*
-			 *passa apenas os que não foram estacionados
-			 *status = false
-			 */
-			if(!v.getStatus()){ total++; }
+	public String imprimirVeiculos(){
+		StringBuilder sb = new StringBuilder();
+		int cont = 0;
+		for (Veiculo veiculo : veiculos) {
+			sb.append(cont + " - " + veiculo.getPlaca() + "\n");
+			cont++;
 		}
-		return total;
-	}
-
-	public ArrayList<Veiculo> getVeiculos(){
-		return this.veiculos;
-	}
-
-	public String getId(){
-		return this.id;
-	}
-
-	public String getNome(){
-		return this.nome;
+		return sb.toString();
 	}
 
 	public Veiculo getVeiculo(String placa){
@@ -167,6 +143,10 @@ public class Cliente implements IArrecadavel {
 			if(v.getPlaca() == placa){ ve = v; }
 		}
 		return ve;
+	}
+
+	public Veiculo getVeiculo(int posicao){
+		return veiculos.get(posicao);
 	}
 
 	@Override
