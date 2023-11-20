@@ -22,7 +22,6 @@ public class app {
     public static void menu(){
         Scanner s = new Scanner(System.in);
 
-
         System.out.print("\nO que deseja fazer?\n");
         System.out.print("  1-Listagens\n");
         System.out.print("  2-Relatorios\n");
@@ -151,7 +150,7 @@ public class app {
                 try {
                     cadastrarCliente();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Não foi possível cadastrar o cliente");
                 }
                 menu();
                 break;
@@ -191,7 +190,9 @@ public class app {
                 System.out.print("Qual cliente?\n\n");
 
                 for(int i = 0; i< e1.getClientes().size(); i++){
-                    System.out.println(i + "- " + e1.getClientes().get(i).toString());
+                    if(e1.getClientes().get(i).getVeiculosCount() > 0){
+                        System.out.println(i + "- " + e1.getClientes().get(i).toString());
+                    }
                 }
 
                 int selecao2 = s.nextInt();
@@ -316,7 +317,7 @@ public class app {
                 System.out.println(total);
                 menu();
                 break;
-            }
+        }
     }
 
     public static void Estacionamento(){
@@ -383,6 +384,12 @@ public class app {
             String[] linhas = linhac.split(";", 0);
             Cliente c = new Cliente(linhas[0], linhas[1]);
             clientes.add(c);
+        }
+
+        for(Estacionamento e : estacionamentos){
+            for(Cliente c: clientes){
+                e.addCliente(c);
+            }
         }
     }
 

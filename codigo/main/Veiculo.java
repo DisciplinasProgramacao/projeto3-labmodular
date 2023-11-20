@@ -4,14 +4,11 @@ package main;
  * por Gabriel Henrique
  * */
 
-import interfaces.IArrecadavel;
 import java.util.ArrayList;
 
-public class Veiculo implements IArrecadavel {
+public class Veiculo {
 
 	private String placa;
-	private boolean status = false;//não esta estacionado
-	private boolean temDono = false;
 	private ArrayList<UsoDeVaga> usos = new ArrayList<UsoDeVaga>(); //Mudar para arrayList
 
 	public Veiculo(String placa) {
@@ -28,7 +25,6 @@ public class Veiculo implements IArrecadavel {
 				vaga.estacionar();
 				UsoDeVaga usoVaga = new UsoDeVaga(vaga);
 				this.usos.add(usoVaga);
-				this.changeStatus();
 			} catch(Exception e) {
 				res = false;
 			}
@@ -45,7 +41,6 @@ public class Veiculo implements IArrecadavel {
 				vaga.estacionar();
 				UsoDeVaga usoVaga = new UsoDeVaga(vaga, serv);
 				this.usos.add(usoVaga);
-				this.changeStatus();
 			} catch(Exception e) {
 				res = false;
 			}
@@ -54,6 +49,7 @@ public class Veiculo implements IArrecadavel {
 		}
 		return res;
 	}
+	
 	/*
 	 * Quando sair da vaga, invoca o método sair da classe Vaga
   	 * e disponibiliza como disponivel=true;
@@ -62,7 +58,6 @@ public class Veiculo implements IArrecadavel {
 		boolean res = true;
 		try {
 			vaga.sair();
-			this.status = false;
 		} catch(Exception e) {
 			res = false;
 		}
@@ -98,7 +93,6 @@ public class Veiculo implements IArrecadavel {
 		return this.placa;
 	}
 
-	@Override
 	public double arrecadadoTotal() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'arrecadadoTotal'");
@@ -115,25 +109,5 @@ public class Veiculo implements IArrecadavel {
 	@Override
 	public String toString(){
 		return this.placa;
-	}
-
-	public void changeStatus(){
-		this.status = true;
-	}
-
-	public void changeFalse(){
-		this.status = false;
-	}
-
-	public boolean getStatus(){
-		return this.status;
-	}
-
-	public void temDono(){
-		this.temDono = true;
-	}
-
-	public boolean getTemDono(){
-		return this.temDono;
 	}
 }

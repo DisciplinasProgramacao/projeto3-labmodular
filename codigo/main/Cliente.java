@@ -9,9 +9,8 @@ package main;
 import java.util.ArrayList;
 
 import enuns.IdentificacaoCliente;
-import interfaces.IArrecadavel;
 
-public class Cliente implements IArrecadavel {
+public class Cliente {
 
 	private String nome;
 	private String id;
@@ -85,7 +84,6 @@ public class Cliente implements IArrecadavel {
 	 * Retorna a soma dos valores das vagas utilizadas pelos veículos
 	 * do cliente
 	 */
-	@Override
 	public double arrecadadoTotal() {
 		double total = 0.0;
 		for(Veiculo v : veiculos){ 
@@ -94,7 +92,6 @@ public class Cliente implements IArrecadavel {
 		return total;
 	}
 
-	@Override
 	public double arrecadadoNoMes(int mes) {
 		double total = 0.0;
 		for(Veiculo v : veiculos){ 
