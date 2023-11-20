@@ -10,12 +10,13 @@ import java.util.ArrayList;
 
 import enuns.IdentificacaoCliente;
 import interfaces.IArrecadavel;
+import interfaces.ICategoriaCliente;
 
 public class Cliente implements IArrecadavel {
 
 	private String nome;
 	private String id;
-	private IdentificacaoCliente identificado;
+	private ICategoriaCliente categoria;
 	private ArrayList<Veiculo> veiculos = new ArrayList<Veiculo>();
 
 	/*
@@ -24,14 +25,15 @@ public class Cliente implements IArrecadavel {
 	 * - O segundo define um novo cliente apenas com o ID, deixando o
 	 * nome como anônimo
 	 */
-	public Cliente(String nome, String id) {
-		this.identificado = IdentificacaoCliente.IDENTIFICADO;
+	public Cliente(String nome, String id, ICategoriaCliente categoria) {
+		this.categoria = categoria !=null ?categoria: new Horista(this);
 		this.nome = nome;
 		this.id = id;
 	}
 
-	public Cliente(String id) {
-		this.identificado = IdentificacaoCliente.NAO_IDENTIFICADO;
+	public Cliente(String id,ICategoriaCliente categoriaCliente) {
+		
+		this.categoria = categoria !=null ?categoria: new Horista(this);
 		this.nome = "anônimo";
 		this.id = id;
 	}
@@ -152,5 +154,12 @@ public class Cliente implements IArrecadavel {
 	@Override
 	public String toString(){
 		return this.nome + " - " + this.id; 
+	}
+
+	public double calcularPagamento(){
+		return categoria.calcularPagamento();
+	}
+	public ArrayList<Veiculo> getVeiculos() {
+		return this.veiculos;
 	}
 }

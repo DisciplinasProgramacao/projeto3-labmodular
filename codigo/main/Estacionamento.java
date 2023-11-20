@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Estacionamento {
+import interfaces.ITipoCliente;
+
+public class Estacionamento{
 
 	private String nome;
 	private Map<Integer, Cliente> clientes = new HashMap<Integer, Cliente>(200);

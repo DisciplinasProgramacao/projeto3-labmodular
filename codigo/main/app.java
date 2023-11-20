@@ -381,7 +381,7 @@ public class app {
         
         while((linhac = brc.readLine()) != null){
             String[] linhas = linhac.split(";", 0);
-            Cliente c = new Cliente(linhas[0], linhas[1]);
+            Cliente c = new Cliente(linhas[0], linhas[1], null);
             clientes.add(c);
         }
     }
@@ -397,7 +397,7 @@ public class app {
         System.out.println("Digite o seu id");
         String id = s.nextLine();
 
-        Cliente c = new Cliente(nome, id);
+        Cliente c = new Cliente(nome, id, null);
 
         bw.newLine();
         bw.write(c.toString());

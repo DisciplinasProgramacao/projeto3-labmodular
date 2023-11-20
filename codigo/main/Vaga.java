@@ -10,7 +10,10 @@ public class Vaga {
 		
 	}
 
-	public boolean estacionar() {
+	public Vaga(char letraVaga, int numeroVaga, String nome) {
+    }
+
+    public boolean estacionar() {
 		
 	}
 
@@ -21,5 +24,9 @@ public class Vaga {
 	public boolean disponivel() {
 		
 	}
+
+    public String getNomeEstacionamento() {
+        return null;
+    }
 
 }
