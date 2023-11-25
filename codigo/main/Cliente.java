@@ -7,39 +7,43 @@ package main;
  */
 
 import java.util.ArrayList;
-
-import enuns.IdentificacaoCliente;
-import interfaces.IArrecadavel;
 import interfaces.ICategoriaCliente;
 
-public class Cliente implements IArrecadavel {
+public class Cliente implements ICategoriaCliente {
 
 	private String nome;
-	private String id;
+	private Integer id;
 	private ICategoriaCliente categoria;
 	private ArrayList<Veiculo> veiculos = new ArrayList<Veiculo>();
 
-	/*
+	/**
 	 * Contrutores da classe Cliente
-	 * - O primeiro define um novo cliente com nome e ID
-	 * - O segundo define um novo cliente apenas com o ID, deixando o
-	 * nome como anônimo
+	 * Define um novo cliente com nome, ID e categoria
+	 * @param nome
+	 * @param id
+	 * @param categoria
 	 */
-	public Cliente(String nome, String id, ICategoriaCliente categoria) {
-		this.categoria = categoria !=null ?categoria: new Horista(this);
+	public Cliente(String nome, Integer id, ICategoriaCliente categoria) {
+		this.categoria = categoria != null ? categoria : new Horista(this);
 		this.nome = nome;
 		this.id = id;
 	}
 
-	public Cliente(String id,ICategoriaCliente categoriaCliente) {
-		
-		this.categoria = categoria !=null ?categoria: new Horista(this);
+	/**
+	 * Define um novo cliente apenas com o ID e categoria, deixando o
+	 * nome como anônimo
+	 * @param id
+	 * @param categoriaCliente
+	 */
+	public Cliente(Integer id,ICategoriaCliente categoriaCliente) {
+		this.categoria = categoriaCliente !=null ? categoria: new Horista(this);
 		this.nome = "anônimo";
 		this.id = id;
 	}
 
-	/*
+	/**
 	 * Adiciona um novo veiculo ao vetor de veiculos
+	 * @param veiculo
 	 */
 	public void addVeiculo(Veiculo veiculo) {
 		if(!this.possuiVeiculo(veiculo.getPlaca())){
@@ -47,8 +51,9 @@ public class Cliente implements IArrecadavel {
 		}
 	}
 
-	/*
+	/**
 	 * Retorna se o cliente possui veiculo se baseando na placa
+	 * @param placa
 	 */
 	public boolean possuiVeiculo(String placa) {
 		boolean status = false;
@@ -58,7 +63,7 @@ public class Cliente implements IArrecadavel {
 		return status;
 	}
 
-	/*
+	/**
 	 * Percorre todo o vetor de veículos do cliente e faz a soma
 	 * da quantidade de vagas que os veículos utilizaram
 	 */
@@ -71,9 +76,10 @@ public class Cliente implements IArrecadavel {
 		return total;
 	}
 
-	/*
+	/**
 	 * Retorna a soma dos valores das vagas utilizadas por um veículo
 	 * do cliente
+	 * @param placa
 	 */
 	public double arrecadadoPorVeiculo(String placa) {
 		double total = 0.0;
@@ -83,11 +89,10 @@ public class Cliente implements IArrecadavel {
 		return total;
 	}
 
-	/*
+	/**
 	 * Retorna a soma dos valores das vagas utilizadas pelos veículos
 	 * do cliente
 	 */
-	@Override
 	public double arrecadadoTotal() {
 		double total = 0.0;
 		for(Veiculo v : veiculos){ 
@@ -96,39 +101,49 @@ public class Cliente implements IArrecadavel {
 		return total;
 	}
 
-	@Override
-	public double arrecadadoNoMes(int mes) {
-		double total = 0.0;
-		for(Veiculo v : veiculos){ 
-			for(UsoDeVaga u : v.getUsos()){
-				if(u.getMesEntrada() == mes){ total += u.valorPago();  }
-			}
-		}
-		return total;
-	}
-
 	//RELATORIOS
+	/**
+	 * Retorna uma string com todos os usos de vagas dos veiculos do cliente
+	 * @param estacionamento
+	 */
 	public String usoDeEstacionamento(String estacionamento){
 		StringBuilder b = new StringBuilder();
 
 		for(Veiculo v : veiculos){ 
 			for(UsoDeVaga u : v.getUsos()){
 				if(v.getUsosCount() > 0 && u.getVaga().getNomeEstacionamento() == estacionamento){
-					b.append(u.getVaga().getNomeEstacionamento() + " - " + u.getData());
+					b.append(u.getVaga().getNomeEstacionamento() + " - " + u.getData()+" - R$" + String.format("%.2f", u.getValorPago())+"\n");
 				}
 			}
 		}
 		return b.toString();
 	}
 
-	/*
-	 * Retorna todos os veiculos do cliente
+	/**
+	 * Retorna o valor arrecadado durante o mês especificado
+	 * @param mes
+	 */
+	public double arrecadadoNoMes(int mes) {
+		double total = 0.0;
+		for(Veiculo v : veiculos){ 
+			for(UsoDeVaga u : v.getUsos()){
+				if(u.getMesEntrada() == mes){ total += u.calcularValor();  }
+			}
+		}
+		return total;
+	}
+
+	/**
+	 * Retorna a quantidade de veiculos do cliente
 	 * 
 	 */
 	public int getVeiculosCount(){
 		return this.veiculos.size();
 	}
 
+	/**
+	 * Imprime os veiculo no padrão posiçao-placa
+	 */
 	public String imprimirVeiculos(){
 		StringBuilder sb = new StringBuilder();
 		int cont = 0;
@@ -139,16 +154,35 @@ public class Cliente implements IArrecadavel {
 		return sb.toString();
 	}
 
+	/**
+	 * Retorna um veiculo baseado na placa do mesmo
+	 * @param placa
+	 */
 	public Veiculo getVeiculo(String placa){
 		Veiculo ve = null;
 		for(Veiculo v: veiculos){
-			if(v.getPlaca() == placa){ ve = v; }
+			if(v.getPlaca().equals(placa)){ 
+				ve = v;
+				return ve;
+			 }
 		}
 		return ve;
 	}
 
+	/**
+	 * Retorna um veiculo baseado no índice
+	 * @param posicao
+	 */
 	public Veiculo getVeiculo(int posicao){
 		return veiculos.get(posicao);
+	}
+
+	/**
+	 * Método utiliza a função calcularPagamento em cada uma das classes que
+	 * implementam a interface ICategoriaCliente
+	 */
+	public double calcularPagamento(){
+		return categoria.calcularPagamento();
 	}
 
 	@Override
@@ -156,10 +190,20 @@ public class Cliente implements IArrecadavel {
 		return this.nome + " - " + this.id; 
 	}
 
-	public double calcularPagamento(){
-		return categoria.calcularPagamento();
+	//GET E SET
+	public Integer getId(){
+		return this.id;
 	}
+
+	public void setCategoria(ICategoriaCliente categoria){
+		this.categoria = categoria;
+	}
+
 	public ArrayList<Veiculo> getVeiculos() {
 		return this.veiculos;
+	}
+
+	public ICategoriaCliente getCategoria(){
+		return this.categoria;
 	}
 }

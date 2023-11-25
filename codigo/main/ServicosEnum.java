@@ -1,3 +1,5 @@
+package main;
+
 public enum ServicosEnum {
     MANOBRISTA(5.0, 0.0),
     LAVAGEM(20.0,60.0),

@@ -7,7 +7,6 @@ import interfaces.ICategoriaCliente;
 public class DeTurno implements ICategoriaCliente{
     public String turno;
     public Cliente cli;
-
     private LocalTime inicioTurno;
     private LocalTime fimTurno;
 
@@ -32,6 +31,7 @@ public class DeTurno implements ICategoriaCliente{
                 throw new IllegalArgumentException("Turno desconhecido: " + turno);
         }
     }
+
     @Override
     public double calcularPagamento(){
         double valor=200.00;
@@ -45,12 +45,10 @@ public class DeTurno implements ICategoriaCliente{
         return valor;
     }
    
-    
-    
-
     private boolean estaDentroDoTurno(LocalTime horaEntrada, LocalTime horaSaida) {
         return (horaEntrada.compareTo(inicioTurno) >= 0) && (horaSaida.compareTo(fimTurno) <= 0);
     }
+
     private double calcularValorAdicional(LocalTime horaEntrada, LocalTime horaSaida) {
         double taxaHoraria = 10.0; 
         long minutosForaDoTurno = 0;

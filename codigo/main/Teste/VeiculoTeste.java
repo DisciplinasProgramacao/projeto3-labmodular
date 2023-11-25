@@ -13,7 +13,7 @@ public class VeiculoTeste {
 
     @BeforeAll
     public void create(){
-        v =  new Vaga(0, 15);
+        v =  new Vaga(0, 15, "teste");
         ve = new Veiculo("abcdefg");
     }
 

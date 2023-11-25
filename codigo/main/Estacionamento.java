@@ -1,16 +1,18 @@
 package main;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import interfaces.ITipoCliente;
-
 public class Estacionamento{
 
+	private Integer id;
 	private String nome;
 	private Map<Integer, Cliente> clientes = new HashMap<Integer, Cliente>(200);
 	private Map<Integer, Vaga> vagas = new HashMap<Integer, Vaga>(200);;
@@ -18,7 +20,8 @@ public class Estacionamento{
 	private int vagasPorFileira;
     private int quantVagas;
 
-	public Estacionamento(String nome, int fileiras, int vagasPorFila) {
+	public Estacionamento(Integer id, String nome, int fileiras, int vagasPorFila) {
+		this.id = id;
 		this.nome=nome;
 		this.quantFileiras=fileiras;
 		this.vagasPorFileira=vagasPorFila;
@@ -26,12 +29,28 @@ public class Estacionamento{
 		gerarVagas();
 	}
 
-	public void addCliente(Cliente cliente) {
+	public void addCliente(Cliente cliente) throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter("estacionamentoClientes.txt", true));
+		
 		try {
-            clientes.put(cliente.hashCode(), cliente);
+			if(clientes.get(cliente.getId()) == null){
+				clientes.put(cliente.getId(), cliente);
+				bw.newLine();
+				bw.write(0+";"+cliente.getId());
+			}
         } catch (Exception e) {
             throw(e);
         }
+	}
+
+	public Cliente getById(Integer id){
+		Cliente c = null;
+		try{
+			c = clientes.get(id);
+		}catch(NullPointerException e){
+			throw new RuntimeException();
+		}
+		return c;
 	}
 
 	private void gerarVagas() {
@@ -42,6 +61,16 @@ public class Estacionamento{
 			Vaga nova= new Vaga(letraVaga,numeroVaga, this.nome);
 			vagas.put(hashCode(), nova);
 		}
+	}
+
+	public Vaga getVagaAleatoria(){
+		Vaga valueVagaDisp = null;
+		for (var entryVagas : vagas.entrySet()) {
+			if(entryVagas.getValue().disponivel()){
+				valueVagaDisp = entryVagas.getValue();
+			}
+		}
+		return valueVagaDisp;
 	}
 
 	public void estacionar(String placa) {                                        
@@ -87,7 +116,7 @@ public class Estacionamento{
                 Cliente value = entryClientes.getValue();
 				for(UsoDeVaga uv : value.getVeiculo(placa).getUsos()){
 					if(!uv.getStatus()){ 
-						total = uv.valorPago();
+						total = value.calcularPagamento();
 						if(total > 0){
 							uv.sair();
 							uv.getVaga().sair();
@@ -142,4 +171,16 @@ public class Estacionamento{
 		return this.vagas;
 	}
 
+	public double valorMedio(){
+		double total = 0d;
+		int horistas = 0;
+		for(Cliente c: this.getClientes()){
+			if(c.getCategoria().getClass().getName().contains("main.Horista")){
+				total += c.arrecadadoNoMes(LocalDate.now().getMonthValue());
+				horistas+=1;
+			}
+			
+		}
+		return total/horistas;
+	}
 }

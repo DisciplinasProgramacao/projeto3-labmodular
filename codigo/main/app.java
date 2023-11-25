@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import interfaces.ICategoriaCliente;
+
 public class app {
 
     static ArrayList<Estacionamento> estacionamentos = new ArrayList<Estacionamento>();
@@ -43,7 +45,11 @@ public class app {
                 Clientes();
                 break;
             case 4:
-                Estacionamento();
+                try {
+                    Estacionamento();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -63,7 +69,7 @@ public class app {
 
         switch(opcao){
             case 1:
-                for(Cliente c : clientes){
+                for(ICategoriaCliente c : clientes){
                     System.out.println(c.toString());
                 }
                 menu();
@@ -139,15 +145,18 @@ public class app {
         System.out.print("  4-Retirar veiculo\n");
         System.out.print("  5-Usos de estacionamentos\n");
         System.out.print("  6-Arrecadado no mês\n\n");
+        System.out.print("  7-Médio por horista\n\n");
 
         System.out.print("O que deseja?");
 
 
-        Scanner s = new Scanner(System.in);
-        int opcao = s.nextInt();
+        Scanner scannerClientes = new Scanner(System.in);
+        int opcao = scannerClientes.nextInt();
 
         switch(opcao){
             case 1:
+                //Limpar o console em qualquer SO
+                System.out.print("\033\143");
                 try {
                     cadastrarCliente();
                 } catch (IOException e) {
@@ -156,55 +165,44 @@ public class app {
                 menu();
                 break;
             case 2:
-                System.out.print("Para qual cliente?\n\n");
-                for(int i = 0; i< clientes.size(); i++){
-                    System.out.println(i + "- " + clientes.get(i).toString());
+                //Limpar o console em qualquer SO
+                System.out.print("\033\143");
+                try{
+
+                    Cliente c = seletorCliente();
+                    System.out.print("Qual veiculo deseja adicionar?\n\n");
+
+                    for(int i = 0; i< veiculos.size(); i++){
+                        Veiculo tempVeiculo = veiculos.get(i);
+                        if(!tempVeiculo.getTemDono()){
+                            System.out.println(tempVeiculo.getId() + "- " + tempVeiculo.getPlaca());
+                        }
+                    }
+
+                    int selecao = scannerClientes.nextInt();
+                    Veiculo v = veiculos.get(selecao);
+
+                    
+                    c.addVeiculo(v);
+                }catch (IndexOutOfBoundsException e) {
+                    System.out.println("Não foi possível localizar o id selecionado");
                 }
-
-                int selecao1 = s.nextInt();
-                Cliente c = clientes.get(selecao1);
-
-                System.out.print("Qual veiculo deseja adicionar?\n\n");
-
-                for(int i = 0; i< veiculos.size(); i++){
-                    System.out.println(i + "- " + veiculos.get(i).getPlaca());
-                }
-
-                int selecao = s.nextInt();
-                Veiculo v = veiculos.get(selecao);
-
-                
-                c.addVeiculo(v);
 
                 menu();
                 break;
             case 3:
-                System.out.println("Qual estacionamento?\n\n");
-                for(int i = 0; i< estacionamentos.size(); i++){
-                    System.out.println(i+"- "+ estacionamentos.get(i).toString());
-                }
+                //Limpar o console em qualquer SO
+                System.out.print("\033\143");
 
-                int selecao4 = s.nextInt();
-                Estacionamento e1 = estacionamentos.get(selecao4);
+                //Chama o seletor de estacionamentos
+                Estacionamento e1 = seletorEstacionamentos();
 
+                //Chama o menu novamente se o estacionamento não possuir clientes
                 if(e1.getClientes().size() <= 0){ menu(); }
-                System.out.print("Qual cliente?\n\n");
 
-                for(int i = 0; i< e1.getClientes().size(); i++){
-                    System.out.println(i + "- " + e1.getClientes().get(i).toString());
-                }
-
-                int selecao2 = s.nextInt();
-                Cliente c1 = e1.getClientes().get(selecao2);
-
-                System.out.print("Qual veiculo? (-1 para cancelar)\n\n");
-                System.out.println(c1.imprimirVeiculos());
-
-                int s1 = s.nextInt();
-
-                if(s1 == -1){ menu(); }
+                Cliente c1 = seletorClientePorEstacionamento(e1);
                 
-                Veiculo v1 = c1.getVeiculo(s1);
+                Veiculo v1 = seletorVeiculoPorCliente(c1);
 
                 System.out.print("Quer algum serviço?\n\n");
                 System.out.print("  1-Manobrista?\n");
@@ -212,8 +210,8 @@ public class app {
                 System.out.print("  3-Polimento?\n");
                 System.out.print("  4-Nenhum?\n");
 
-                int selecao10 = s.nextInt();
-                switch(selecao10){
+                int selecaoServicos = scannerClientes.nextInt();
+                switch(selecaoServicos){
                     case 1:
                         Servicos serv = new Servicos("MANOBRISTA");
                         e1.estacionar(v1.getPlaca(), serv);
@@ -226,7 +224,7 @@ public class app {
                         Servicos serv3 = new Servicos("POLIMENTO");
                         e1.estacionar(v1.getPlaca(), serv3);
                         break;
-                    case 0:
+                    case 4:
                         e1.estacionar(v1.getPlaca());
                         break;
                         
@@ -234,94 +232,65 @@ public class app {
                 menu();
                 break;
             case 4:
-                System.out.println("Qual estacionamento?\n\n");
-                for(int i = 0; i< estacionamentos.size(); i++){
-                    System.out.println(i+"- "+ estacionamentos.get(i).toString());
-                }
+                //Limpar o console em qualquer SO
+                System.out.print("\033\143");
 
-                int selecao7 = s.nextInt();
-                Estacionamento e2 = estacionamentos.get(selecao7);
-
+                Estacionamento e2 = seletorEstacionamentos();
                 if(e2.getClientes().size() <= 0){ menu(); }
-                System.out.print("Qual cliente?\n\n");
 
-                for(int i = 0; i< e2.getClientes().size(); i++){
-                    if(e2.getClientes().get(i).getVeiculosCount() > 0){
-                        System.out.println(i + "- " + e2.getClientes().get(i).toString());
-                    }
-                }
-
-                int selecao5 = s.nextInt();
-                Cliente c2 = e2.getClientes().get(selecao5);
+                Cliente c2 = seletorClientePorEstacionamento(e2);
 
                 if(c2.getVeiculosCount() <= 0){ menu(); }
             
-                System.out.print("Qual veiculo?\n\n");
-                System.out.println(c2.imprimirVeiculos());
-
-                int selecao6 = s.nextInt();
-                Veiculo v2 = c2.getVeiculo(selecao6);
+                Veiculo v2 = seletorVeiculoPorCliente(c2);
 
                 System.out.println("Total pago pelo cliente: " + e2.sair(v2.getPlaca()) + " ");
                 menu();
                 break;
             case 5:
-                System.out.println("Qual estacionamento?\n\n");
-                for(int i = 0; i< estacionamentos.size(); i++){
-                    System.out.println(i+"- "+ estacionamentos.get(i).toString());
-                }
+                //Limpar o console em qualquer SO
+                System.out.print("\033\143");
 
-                int selecao8 = s.nextInt();
-                Estacionamento e3 = estacionamentos.get(selecao8);
+                Estacionamento e3 = seletorEstacionamentos();
 
-                System.out.print("Qual cliente?\n\n");
-
-                for(int i = 0; i< e3.getClientes().size(); i++){
-                    if(e3.getClientes().get(i).getVeiculosCount() > 0){
-                        System.out.println(i + "- " + e3.getClientes().get(i).toString());
-                    }
-                }
-
-                int selecao9 = s.nextInt();
-                Cliente c3 = e3.getClientes().get(selecao9);
+                Cliente c3 = seletorClientePorEstacionamento(e3);
 
                 System.out.println(c3.usoDeEstacionamento(e3.toString()));
 
                 menu();
                 break;
             case 6:
-                System.out.println("Qual estacionamento?\n\n");
-                for(int i = 0; i< estacionamentos.size(); i++){
-                    System.out.println(i+"- "+ estacionamentos.get(i).toString());
-                }
+                //Limpar o console em qualquer SO
+                System.out.print("\033\143");
 
-                int selecao11 = s.nextInt();
-                Estacionamento est = estacionamentos.get(selecao11);
+                Estacionamento est = seletorEstacionamentos();
 
                 if(est.getClientes().size() <= 0){ menu(); }
-                System.out.print("Qual cliente?\n\n");
 
-                for(int i = 0; i< est.getClientes().size(); i++){
-                    if(est.getClientes().get(i).getVeiculosCount() > 0){
-                        System.out.println(i + "- " + est.getClientes().get(i).toString());
-                    }
-                }
-
-                int selecao12 = s.nextInt();
-                Cliente c4 = est.getClientes().get(selecao12);
+                Cliente c4 = seletorClientePorEstacionamento(est);
 
                 System.out.println("Selecione(1-janeiro e assim por diante)");
-                int mes = s.nextInt();
+                int mes = scannerClientes.nextInt();
                 double total = c4.arrecadadoNoMes(mes);
                 System.out.println(total);
                 menu();
                 break;
+            case 7:
+            try{
+                Estacionamento e = seletorEstacionamentos();
+                System.out.println(String.format("%.2f", e.valorMedio()));
+            }catch(Exception e){
+                System.out.print(e);
             }
+            menu();
+            break;
+        }
     }
 
-    public static void Estacionamento(){
+    public static void Estacionamento() throws IOException{
         System.out.print("Estacionamento\n\n");
-        System.out.println("    1-Adicionar cliente\n");
+        System.out.print("    1-Adicionar cliente\n");
+        System.out.println("    2-Alterar categoria do cliente\n");
 
         System.out.print("O que deseja?");
 
@@ -347,11 +316,113 @@ public class app {
 
                 int selecao2 = s.nextInt();
                 Cliente c = clientes.get(selecao2);
+
+                System.out.print("Qual categoria?\n\n");
+                System.out.print("0- Mensalista?\n");
+                System.out.print("1- De turno?\n");
+                System.out.print("2- Horista?\n");
+
+                int selecaoCategoria = s.nextInt();
+
+                switch (selecaoCategoria) {
+                    case 0:
+                        c.setCategoria(new Mensalista(c));
+                        break;
+                    case 1:
+                        System.out.println("Qual turno?\n\n");
+                        System.out.print("1- manha?\n2- tarde\n3- noite\n\n");
+                        int turno = s.nextInt();
+                        String turnoSring = "";
+
+                        switch (turno) {
+                            case 1:
+                                turnoSring = "manha";
+                                break;
+                            case 2:
+                                turnoSring = "tarde";
+                                break;
+                            case 3:
+                                turnoSring = "noite";
+                                break;
+                        
+                            default:
+                                turnoSring = "manha";
+                                break;
+                        }
+
+                        c.setCategoria(new DeTurno(c, turnoSring));
+                        break;
+                    default:
+                        System.out.println("Opção inválida");
+                        break;
+                }
                 e1.addCliente(c);
 
                 menu();
                 break;
-        
+            case 2:
+                System.out.println("Qual estacionamento?\n\n");
+                for(int i = 0; i< estacionamentos.size(); i++){
+                    System.out.println(i+"- "+ estacionamentos.get(i).toString());
+                }
+
+                int selecaoEstacionamento = s.nextInt();
+                Estacionamento estacionamentoSelecionado = estacionamentos.get(selecaoEstacionamento);
+
+                System.out.println("Qual cliente?\n\n");
+
+                for(int i = 0; i< estacionamentoSelecionado.getClientes().size(); i++){
+                    System.out.println(estacionamentoSelecionado.getClientes().get(i).toString());
+                }
+
+                int selecaoCliente = s.nextInt();
+                Cliente clienteSelecionado = estacionamentoSelecionado.getById(selecaoCliente);
+
+                if(clienteSelecionado == null){ menu(); }
+
+                System.out.print("Qual categoria?\n\n");
+                System.out.print("0- Mensalista?\n");
+                System.out.print("1- De turno?\n");
+                System.out.print("2- Horista?\n");
+
+                int selecaoCategoria2 = s.nextInt();
+
+                switch (selecaoCategoria2) {
+                    case 0:
+                        clienteSelecionado.setCategoria(new Mensalista(clienteSelecionado));
+                        break;
+                    case 1:
+                        System.out.println("Qual turno?\n\n");
+                        System.out.print("1- manha?\n2- tarde\n3- noite\n\n");
+                        int turno = s.nextInt();
+                        String turnoSring = "";
+
+                        switch (turno) {
+                            case 1:
+                                turnoSring = "manha";
+                                break;
+                            case 2:
+                                turnoSring = "tarde";
+                                break;
+                            case 3:
+                                turnoSring = "noite";
+                                break;
+                        
+                            default:
+                                turnoSring = "manha";
+                                break;
+                        }
+
+                        clienteSelecionado.setCategoria(new DeTurno(clienteSelecionado, turnoSring));
+                        break;
+                    case 2:
+                        clienteSelecionado.setCategoria(new Horista(clienteSelecionado));
+                        break;
+                    default:
+                        System.out.println("Opção inválida");
+                        break;
+                }
+                menu();
             default:
                 break;
         }
@@ -363,7 +434,7 @@ public class app {
         
         while((linhae = bre.readLine()) != null){
             String[] linhas = linhae.split(";", 0);
-            Estacionamento e = new Estacionamento(linhas[0], Integer.parseInt(linhas[1]), Integer.parseInt(linhas[2]));
+            Estacionamento e = new Estacionamento(Integer.parseInt(linhas[0]), linhas[1], Integer.parseInt(linhas[2]), Integer.parseInt(linhas[3]));
             estacionamentos.add(e);	
         }
 
@@ -372,7 +443,7 @@ public class app {
         
         while((linhav = brv.readLine()) != null){
             String[] linhas = linhav.split(";", 0);
-            Veiculo v = new Veiculo(linhas[0]);
+            Veiculo v = new Veiculo(Integer.parseInt(linhas[0]), linhas[1]);
             veiculos.add(v);
         }
 
@@ -381,8 +452,45 @@ public class app {
         
         while((linhac = brc.readLine()) != null){
             String[] linhas = linhac.split(";", 0);
-            Cliente c = new Cliente(linhas[0], linhas[1], null);
+            Cliente c = new Cliente(linhas[0], Integer.parseInt(linhas[1]), null);
             clientes.add(c);
+        }
+        carregarDadosInternos();
+    }
+
+    public static void carregarDadosInternos() throws NumberFormatException, IOException{
+        //ClienteEstacionamento
+        BufferedReader brec = new BufferedReader(new FileReader("estacionamentoClientes.txt"));
+        String linhaec = "";
+        
+        while((linhaec = brec.readLine()) != null){
+            String[] linhas = linhaec.split(";", 0);
+            estacionamentos.get(Integer.parseInt(linhas[0])).addCliente(clientes.get(Integer.parseInt(linhas[1])));
+        }
+
+        //ClienteVeiculos
+        BufferedReader brcv = new BufferedReader(new FileReader("clienteVeiculos.txt"));
+        String linhacv = "";
+        
+        while((linhacv = brcv.readLine()) != null){
+            String[] linhas = linhacv.split(";", 0);
+            clientes.get(Integer.parseInt(linhas[0])).addVeiculo(veiculos.get(Integer.parseInt(linhas[1])));
+        }
+
+
+        //Usos de vagas
+        BufferedReader bruv = new BufferedReader(new FileReader("usoDeVagas.txt"));
+        String linhauv = "";
+
+        while((linhauv = bruv.readLine()) != null){
+            String[] linhas = linhauv.split(";", 0);
+
+            Estacionamento e = estacionamentos.get(Integer.parseInt(linhas[2]));
+            UsoDeVaga u = new UsoDeVaga(e.getVagaAleatoria(), linhas[3], linhas[4]);
+            Cliente c = clientes.get(Integer.parseInt(linhas[0]));
+            Veiculo v = c.getVeiculo(linhas[1]);
+
+            v.adicionarUso(u);
         }
     }
 
@@ -395,7 +503,7 @@ public class app {
         String nome = s.nextLine();
 
         System.out.println("Digite o seu id");
-        String id = s.nextLine();
+        Integer id = clientes.size();
 
         Cliente c = new Cliente(nome, id, null);
 
@@ -414,11 +522,70 @@ public class app {
         System.out.println("Digite a placa");
         String placa = s.nextLine();
 
-        Veiculo v = new Veiculo(placa);
+        int id = veiculos.size();
+
+        Veiculo v = new Veiculo(id, placa);
 
         bw.newLine();
         bw.write(v.getPlaca());
         bw.close();
         veiculos.add(v);
+    }
+
+
+    //Mostra na tela o seletor de estacionamentos
+    public static Estacionamento seletorEstacionamentos(){
+        Scanner seletor = new Scanner(System.in);
+
+        System.out.println("Qual estacionamento?\n\n");
+
+        for(int i = 0; i< estacionamentos.size(); i++){
+            System.out.println(i+"- "+ estacionamentos.get(i).toString());
+        }
+
+        int selecioando = seletor.nextInt();
+        
+        return estacionamentos.get(selecioando);
+    }
+
+    //Mostra na tela o seletor de clientes do estacionamento
+    public static Cliente seletorClientePorEstacionamento(Estacionamento e){
+        Scanner seletor = new Scanner(System.in);
+
+        System.out.print("Qual cliente?\n\n");
+
+        for(int i = 0; i< e.getClientes().size(); i++){
+            System.out.println(e.getClientes().get(i).toString());
+        }
+
+        int selecao2 = seletor.nextInt();
+
+        Cliente c = e.getById(selecao2);
+
+        return c;
+    }
+
+    public static Veiculo seletorVeiculoPorCliente(Cliente c){
+        Scanner seletor = new Scanner(System.in);
+
+        System.out.print("Qual veiculo?\n\n");
+        System.out.println(c.imprimirVeiculos());
+
+        int selecao6 = seletor.nextInt(); 
+
+        return c.getVeiculo(selecao6);       
+    }
+
+    public static Cliente seletorCliente(){
+        Scanner seletor = new Scanner(System.in);
+
+        System.out.print("Qual cliente?\n\n");
+        for(Cliente c: clientes){
+            System.out.println(c.toString());
+        }
+
+        int selecaoCliente = seletor.nextInt();
+
+        return clientes.get(selecaoCliente);
     }
 }

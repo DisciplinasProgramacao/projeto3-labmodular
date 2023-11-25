@@ -1,9 +1,6 @@
 package main;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
-
-import javax.xml.crypto.Data;
 
 import java.time.Duration;
  public class UsoDeVaga {
@@ -35,12 +32,37 @@ import java.time.Duration;
 		this.serviço = serv;
 	}
 
+	//USADO PARA CARGA DE DADOS INICIAL
+	public UsoDeVaga(Vaga vaga, String inicio, String fim){
+		this.vaga = vaga;
+		this.entrada = LocalTime.parse(inicio);
+		this.saida = LocalTime.parse(fim);
+		this.valorPago = this.calcularValor();
+		this.data = LocalDateTime.now();
+	}
+
+	//UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
+	public double calcularValor(){
+		Duration duracao=Duration.between(this.entrada,this.saida);
+		Double horas=(double)duracao.toMinutes()/60;
+		double tempoDeUso = horas;
+
+		Double valorPago = 1d;
+
+		if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
+			valorPago = VALOR_MAXIMO;
+		}else{
+			valorPago = tempoDeUso/FRACAO_USO * VALOR_FRACAO;
+		}
+		return valorPago;
+	}
+
 	public double sair() {
-	  this.saida=LocalTime.now();
+	  this.saida = LocalTime.now();
 	  Duration duracao=Duration.between(this.entrada,saida);
 	  long hora=duracao.toHours();
 	  long minutos=duracao.toMinutes()/60;
-	  double tempoDeUso=hora+minutos;
+	  double tempoDeUso = hora+minutos;
 	  this.status = true;
 	  if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
 		return VALOR_MAXIMO;
@@ -50,11 +72,12 @@ import java.time.Duration;
 	}
 
 	public double valorPago() {
-		valorPago=this.sair()*VALOR_FRACAO;
+		valorPago = this.sair() * VALOR_FRACAO;
 		if(valorPago>VALOR_MAXIMO){
            valorPago=VALOR_MAXIMO;
 		}
-		return valorPago+ serviço.valorServico();
+		if(serviço == null){ return valorPago; }
+		else{ return valorPago + serviço.valorServico(); }
 	}
 
 	public int getMesEntrada(){
@@ -77,5 +100,9 @@ import java.time.Duration;
 	}
 	public LocalTime getHoraSaida(){
 		return saida;
+	}
+
+	public double getValorPago(){
+		return this.valorPago;
 	}
 }
