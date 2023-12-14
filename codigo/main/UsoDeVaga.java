@@ -24,6 +24,11 @@ import java.time.Duration;
 	// 	data=LocalDateTime.now();
 	// }
 
+	 /**
+	 * Cria um novo uso de vaga com serviço.
+	 * @param vaga
+	 * @param serv
+	 */
 	public UsoDeVaga(Vaga vaga, Servicos serv){
 		this.vaga= vaga;
 		this.entrada=LocalTime.now();
@@ -32,7 +37,9 @@ import java.time.Duration;
 		this.serviço = serv;
 	}
 
-	//USADO PARA CARGA DE DADOS INICIAL
+	/**
+	 * USADO PARA CARGA DE DADOS INICIAL
+	 */
 	public UsoDeVaga(Vaga vaga, String inicio, String fim, Servicos serv){
 		this.vaga = vaga;
 		this.entrada = LocalTime.parse(inicio);
@@ -43,7 +50,9 @@ import java.time.Duration;
 		this.serviço = serv;
 	}
 
-	//UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
+	/**
+	 * UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
+	 */
 	public double calcularValor(){
 		Duration duracao=Duration.between(this.entrada,this.saida);
 		Double horas=(double)duracao.toMinutes()/60;
@@ -63,6 +72,9 @@ import java.time.Duration;
 		this.status = true;
 	}
 
+	 /**
+	 * Remove o veículo da vaga.
+	 */
 	public double sair() {
 		Duration duracao = Duration.between(this.entrada, LocalTime.now());
 		double tempoDeUso = duracao.toMinutes();
