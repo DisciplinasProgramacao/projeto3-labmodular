@@ -2,6 +2,9 @@
 # LabModular
 O objetivo do projeto é desenvolver um sistema capaz de realizar o gerenciamento de um estacionamento e seus clientes com opções de relatórios e listagens.
 
+## Instruções
+Abrir somente a pasta [codigo](https://github.com/DisciplinasProgramacao/projeto3-labmodular/tree/master/codigo) quando for testar o projeto.
+
 ## Alunos integrantes da equipe
 
 * Gabriel Henrique Mota Rodrigues
