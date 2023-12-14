@@ -35,6 +35,7 @@ public class Estacionamento{
 	 * @param cliente
 	 * @throws IOException
 	 */
+
 	public void addCliente(Cliente cliente) throws IOException {
 		BufferedWriter bw = new BufferedWriter(new FileWriter("estacionamentoClientes.txt", true));
 		

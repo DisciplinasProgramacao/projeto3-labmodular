@@ -256,6 +256,7 @@ public class app {
                 System.out.print("\033\143");
 
                 Estacionamento e2 = seletorEstacionamentos();
+
                 if(e2.getClientes().size() <= 0){ 
                     System.out.println("Estacionamento não possui clientes");
                     menu();
@@ -279,6 +280,7 @@ public class app {
                 System.out.print("\033\143");
 
                 Estacionamento e3 = seletorEstacionamentos();
+
                 Cliente c3 = seletorClientePorEstacionamento(e3);
 
                 System.out.println(c3.usoDeEstacionamento(e3.toString()));
@@ -563,7 +565,6 @@ public class app {
         Veiculo v = fabricaVeiculo.create();
         v.setId(id);
         v.setPlaca(placa);
-        //Veiculo v = new Veiculo(id, placa);
 
         bw.newLine();
         bw.write(v.getPlaca());

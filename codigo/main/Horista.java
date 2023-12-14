@@ -1,8 +1,5 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import interfaces.ICategoriaCliente;
 
 public class Horista implements ICategoriaCliente{
@@ -30,7 +27,5 @@ public class Horista implements ICategoriaCliente{
                 }
             }
         }
-
         return total;
-    }
 }

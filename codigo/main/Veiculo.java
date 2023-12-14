@@ -22,7 +22,7 @@ public class Veiculo {
 	public Veiculo(){
 		this.estacionado = false;
 	}
-
+  
 	public Veiculo(int id, String placa) {
 		this.id = id;
 		this.placa = placa;
@@ -75,7 +75,7 @@ public class Veiculo {
 	
 	/**
 	 * Quando sair da vaga, invoca o método sair da classe Vaga
-  	 * e disponibiliza como a mesma como disponivel=true;
+   * e disponibiliza a mesma como disponivel=true;
 	 * @param vaga
 	 * */
 	public boolean sair(Vaga vaga) {

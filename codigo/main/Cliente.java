@@ -145,6 +145,7 @@ public class Cliente implements ICategoriaCliente {
 	/**
 	 * Imprime os veiculo no padrão posiçao-placa
 	 */
+  
 	public String imprimirVeiculosDisponiveis(){
 		StringBuilder sb = new StringBuilder();
 		int cont = 0;

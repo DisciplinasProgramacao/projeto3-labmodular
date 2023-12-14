@@ -1,5 +1,6 @@
 package main;
 
+
 import java.time.LocalDateTime;
 
 import interfaces.ICategoriaCliente;
@@ -18,8 +19,7 @@ public class Mensalista implements ICategoriaCliente{
     public double calcularPagamento(){
         System.out.print("Mensalista");
         if(pago){ return 0d; }
-
-
+      
         if(LocalDateTime.now().getDayOfMonth() >= 30){
             this.pago = true;
             return 500.00;
