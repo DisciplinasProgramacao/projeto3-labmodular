@@ -1,32 +1,43 @@
 package main;
 
-public class Servicos {
+import enuns.ServicosEnum;
+
+public class Servicos{
     ServicosEnum tipoServiço;
 
-    public Servicos(String tipo) {
+    public Servicos(String tipo){
         String t = tipo;
         t.toUpperCase();
-        switch (t) {
+
+        switch(t){
             case "MANOBRISTA":
                 this.tipoServiço = ServicosEnum.MANOBRISTA;
                 break;
-            case "LAVAGEM":
+            case"LAVAGEM":
                 this.tipoServiço = ServicosEnum.LAVAGEM;
                 break;
-            case "POLIMENTO":
-                this.tipoServiço = ServicosEnum.POLIMENTO;
+            case"POLIMENTO":
+            this.tipoServiço = ServicosEnum.POLIMENTO;
+                break;
+            case"NENHUM":
+                this.tipoServiço = ServicosEnum.NENHUM;
+                break;
         }
     }
-
-    public double valorServico() {
+    
+    public Double valorServico(){
         return this.tipoServiço.getValor();
     }
 
-    public double tempoMin() {
+    public double tempoMin(){
         return this.tipoServiço.getTempoMin();
     }
 
-    public String toString() {
-        return "preço " + this.valorServico() + " tempo minimo " + this.tempoMin();
+    public String nome(){
+        return this.tipoServiço.getNome();
+    }
+
+    public String toString(){
+        return nome();
     }
 }

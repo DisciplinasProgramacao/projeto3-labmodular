@@ -1,5 +1,6 @@
 package main;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import java.time.Duration;
  public class UsoDeVaga {
@@ -8,56 +9,95 @@ import java.time.Duration;
 	private static final double VALOR_FRACAO = 4.0;
 	private static final double VALOR_MAXIMO = 50.0;
 	private Vaga vaga;
-	private LocalDateTime entrada;
-	private LocalDateTime saida;
+	private LocalTime entrada;
+	private LocalTime saida;
 	private double valorPago;
 	private boolean status = false;
 	private Servicos serviço;
+	private LocalDateTime data;
 
-	public UsoDeVaga(Vaga vaga) {
-		this.vaga= vaga;
-		this.entrada=LocalDateTime.now();
-		this.saida= null;
-		this.valorPago=0;
-	}
+	// public UsoDeVaga(Vaga vaga) {
+	// 	this.vaga= vaga;
+	// 	this.entrada=LocalTime.now();
+	// 	this.saida= null;
+	// 	this.valorPago=0;
+	// 	data=LocalDateTime.now();
+	// }
 
 	public UsoDeVaga(Vaga vaga, Servicos serv){
 		this.vaga= vaga;
-		this.entrada=LocalDateTime.now();
+		this.entrada=LocalTime.now();
 		this.saida= null;
 		this.valorPago=0;
 		this.serviço = serv;
 	}
 
-	public double sair() {
-	  this.saida=LocalDateTime.now();
-	  Duration duracao=Duration.between(this.entrada,saida);
-	  long hora=duracao.toHours();
-	  long minutos=duracao.toMinutes()/60;
-	  double tempoDeUso=hora+minutos;
-	  if(tempoDeUso < serviço.tempoMin()){
-		System.out.print("\nO veiculo não ficou tempo suficiente para concluir o serviço, nenhum valor foi cobrado");
-		return -1.0;
-	  }
-	  this.status = true;
-	  if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
-		return VALOR_MAXIMO;
-	  }else{
-		return tempoDeUso/FRACAO_USO;
-	  }
+	//USADO PARA CARGA DE DADOS INICIAL
+	public UsoDeVaga(Vaga vaga, String inicio, String fim, Servicos serv){
+		this.vaga = vaga;
+		this.entrada = LocalTime.parse(inicio);
+		this.saida = LocalTime.parse(fim);
+		this.valorPago = this.calcularValor();
+		this.status = true;
+		this.data = LocalDateTime.now();
+		this.serviço = serv;
 	}
 
-	public double valorPago() {
-		valorPago=this.sair()*VALOR_FRACAO;
-		if(valorPago>VALOR_MAXIMO){
-           valorPago=VALOR_MAXIMO;
+	//UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
+	public double calcularValor(){
+		Duration duracao=Duration.between(this.entrada,this.saida);
+		Double horas=(double)duracao.toMinutes()/60;
+		double tempoDeUso = horas;
+
+		Double valorPago = 1d;
+
+		if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
+			valorPago = VALOR_MAXIMO;
+		}else{
+			valorPago = tempoDeUso/FRACAO_USO * VALOR_FRACAO;
 		}
-		if(valorPago < 0){  return 0.0; }
-		else{ return valorPago + serviço.valorServico(); }
+		return valorPago;
 	}
+
+	public void fecharUso(){
+		this.status = true;
+	}
+
+	public double sair() {
+		Duration duracao = Duration.between(this.entrada, LocalTime.now());
+		double tempoDeUso = duracao.toMinutes();
+
+		if(tempoDeUso >= this.serviço.tempoMin()){
+			this.vaga.sair();
+			this.data = LocalDateTime.now();
+			this.saida = LocalTime.now();
+
+			if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
+				this.valorPago = VALOR_MAXIMO;
+				return VALOR_MAXIMO;
+			}else{
+				this.valorPago = tempoDeUso * VALOR_FRACAO + serviço.valorServico();
+				return valorPago;
+			}
+		}else{ return -1d; }
+	}
+
+	// public double valorPago() {
+	// 	Duration duracao=Duration.between(this.entrada,saida);
+	// 	long hora=duracao.toHours();
+	// 	long minutos=duracao.toMinutes()/60;
+	// 	double tempoDeUso = hora+minutos;
+
+	// 	valorPago = tempoDeUso * VALOR_FRACAO;
+	// 	if(valorPago>VALOR_MAXIMO){
+    //        valorPago=VALOR_MAXIMO;
+	// 	}
+	// 	if(serviço == null){ return valorPago; }
+	// 	else{ return valorPago + serviço.valorServico(); }
+	// }
 
 	public int getMesEntrada(){
-		return this.entrada.getMonthValue();
+		return this.data.getMonthValue();
 	}
 
 	public Vaga getVaga(){
@@ -70,5 +110,19 @@ import java.time.Duration;
 
 	public boolean getStatus(){
 		return this.status;
+	}
+	public LocalTime getHoraEntrada(){
+		return entrada;
+	}
+	public LocalTime getHoraSaida(){
+		return saida;
+	}
+
+	public double getValorPago(){
+		return this.valorPago;
+	}
+
+	public Servicos getServicos(){
+		return this.serviço;
 	}
 }

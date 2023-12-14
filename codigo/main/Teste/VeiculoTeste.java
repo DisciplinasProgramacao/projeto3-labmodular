@@ -1,21 +1,19 @@
 package main.Teste;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 
 import main.Vaga;
 import main.Veiculo;
 
 public class VeiculoTeste {
-    private Vaga v;
-    private Veiculo ve;
+    Vaga v = null;
+    Veiculo ve = null;
 
-    @Before
+    @BeforeAll
     public void create(){
-        v =  new Vaga(0, 15, "Teste");
+        v =  new Vaga(0, 15, "teste");
         ve = new Veiculo("abcdefg");
     }
 
