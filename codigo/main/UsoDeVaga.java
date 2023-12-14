@@ -16,6 +16,10 @@ import java.time.Duration;
 	private Servicos serviço;
 	private LocalDateTime data;
 
+	/**
+	 * Cria um novo uso de vaga.
+	 * @param vaga
+	 */
 	public UsoDeVaga(Vaga vaga) {
 		this.vaga= vaga;
 		this.entrada=LocalTime.now();
@@ -24,6 +28,11 @@ import java.time.Duration;
 		data=LocalDateTime.now();
 	}
 
+	/**
+	 * Cria um novo uso de vaga com serviço.
+	 * @param vaga
+	 * @param serv
+	 */
 	public UsoDeVaga(Vaga vaga, Servicos serv){
 		this.vaga= vaga;
 		this.entrada=LocalTime.now();
@@ -32,16 +41,21 @@ import java.time.Duration;
 		this.serviço = serv;
 	}
 
-	//USADO PARA CARGA DE DADOS INICIAL
+	/**
+	 * USADO PARA CARGA DE DADOS INICIAL
+	 */
 	public UsoDeVaga(Vaga vaga, String inicio, String fim){
 		this.vaga = vaga;
 		this.entrada = LocalTime.parse(inicio);
 		this.saida = LocalTime.parse(fim);
 		this.valorPago = this.calcularValor();
+		this.status = true;
 		this.data = LocalDateTime.now();
 	}
 
-	//UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
+	/**
+	 * UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
+	 */
 	public double calcularValor(){
 		Duration duracao=Duration.between(this.entrada,this.saida);
 		Double horas=(double)duracao.toMinutes()/60;
@@ -57,22 +71,41 @@ import java.time.Duration;
 		return valorPago;
 	}
 
+	/**
+	 * Remove o veículo da vaga.
+	 */
 	public double sair() {
 	  this.saida = LocalTime.now();
 	  Duration duracao=Duration.between(this.entrada,saida);
 	  long hora=duracao.toHours();
 	  long minutos=duracao.toMinutes()/60;
 	  double tempoDeUso = hora+minutos;
+
+	  //Verificar
+	  this.vaga.sair();
 	  this.status = true;
+
+	  this.data = LocalDateTime.now();
+
 	  if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
+		this.valorPago = VALOR_MAXIMO;
 		return VALOR_MAXIMO;
 	  }else{
-		return tempoDeUso/FRACAO_USO;
+		this.valorPago = valorPago();
+		return tempoDeUso*FRACAO_USO;
 	  }
 	}
 
+	/**
+	 * Retorna o valor pago pelo uso da vaga.
+	 */
 	public double valorPago() {
-		valorPago = this.sair() * VALOR_FRACAO;
+		Duration duracao=Duration.between(this.entrada,saida);
+		long hora=duracao.toHours();
+		long minutos=duracao.toMinutes()/60;
+		double tempoDeUso = hora+minutos;
+
+		valorPago = tempoDeUso * VALOR_FRACAO;
 		if(valorPago>VALOR_MAXIMO){
            valorPago=VALOR_MAXIMO;
 		}

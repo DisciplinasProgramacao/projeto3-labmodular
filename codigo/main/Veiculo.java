@@ -10,6 +10,7 @@ public class Veiculo {
 	private int id;
 	private String placa;
 	private boolean temDono;
+	private boolean estacionado;
 	private ArrayList<UsoDeVaga> usos = new ArrayList<UsoDeVaga>(); //Mudar para arrayList
 
 	/**
@@ -17,9 +18,15 @@ public class Veiculo {
 	 * @param id
 	 * @param placa
 	 */
+
+	public Veiculo(){
+		this.estacionado = false;
+	}
+  
 	public Veiculo(int id, String placa) {
 		this.id = id;
 		this.placa = placa;
+		this.estacionado = false;
 	}
 
 	/**
@@ -33,6 +40,7 @@ public class Veiculo {
 				vaga.estacionar();
 				UsoDeVaga usoVaga = new UsoDeVaga(vaga);
 				this.usos.add(usoVaga);
+				this.setEstacionado(true);
 			} catch(Exception e) {
 				res = false;
 			}
@@ -55,6 +63,7 @@ public class Veiculo {
 				vaga.estacionar();
 				UsoDeVaga usoVaga = new UsoDeVaga(vaga, serv);
 				this.usos.add(usoVaga);
+				this.setEstacionado(true);
 			} catch(Exception e) {
 				res = false;
 			}
@@ -66,13 +75,14 @@ public class Veiculo {
 	
 	/**
 	 * Quando sair da vaga, invoca o método sair da classe Vaga
-  	 * e disponibiliza como disponivel=true;
+   * e disponibiliza a mesma como disponivel=true;
 	 * @param vaga
 	 * */
 	public boolean sair(Vaga vaga) {
 		boolean res = true;
 		try {
 			vaga.sair();
+			this.setEstacionado(true); 
 		} catch(Exception e) {
 			res = false;
 		}
@@ -99,8 +109,16 @@ public class Veiculo {
 		this.getUsos().add(u);
 	}
 
+	/**
+	 * Retorna o total arrecadado no mes solicitado.
+	 * @param mes
+	 */
 	public double arrecadadoNoMes(int mes) {
-		return 0.0;
+		double total = 0.0;
+		for(UsoDeVaga u : usos){
+			if(u.getMesEntrada() == mes){ total += u.calcularValor();  }
+		}
+		return total;
 	}
 	
 	/**
@@ -143,7 +161,23 @@ public class Veiculo {
 		this.temDono = true;
 	}
 
+	public boolean getEstacionado(){
+		return this.estacionado;
+	}
+
+	public void setEstacionado(boolean status){
+		this.estacionado = status;
+	}
+
 	public int getId(){
 		return this.id;
+	}
+
+	public void setId(int id){
+		this.id = id;
+	}
+
+	public void setPlaca(String placa){
+		this.placa = placa;
 	}
 }

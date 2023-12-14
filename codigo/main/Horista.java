@@ -1,7 +1,5 @@
 package main;
 
-import java.time.LocalDate;
-
 import interfaces.ICategoriaCliente;
 
 public class Horista implements ICategoriaCliente{
@@ -11,8 +9,23 @@ public class Horista implements ICategoriaCliente{
         this.cliente=obj;
     }
 
+    /**
+	 * Retorna o valor pago pelo Horista.
+	 */
     @Override
     public double calcularPagamento(){
-        return this.cliente.arrecadadoTotal();
-    }
+        System.out.print("Horista\n");
+        double total = 0d;
+
+        for(Veiculo c: this.cliente.getVeiculos()){
+            if(c.getEstacionado() == true){
+                for(UsoDeVaga u: c.getUsos()){
+                    if(u.getStatus() == false){
+                        u.sair();
+                        total = u.getValorPago();
+                    }
+                }
+            }
+        }
+        return total;
 }

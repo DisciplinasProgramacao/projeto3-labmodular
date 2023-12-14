@@ -47,6 +47,7 @@ public class Cliente implements ICategoriaCliente {
 	 */
 	public void addVeiculo(Veiculo veiculo) {
 		if(!this.possuiVeiculo(veiculo.getPlaca())){
+			veiculo.atribuirDono();
 			veiculos.add(veiculo);
 		}
 	}
@@ -144,11 +145,27 @@ public class Cliente implements ICategoriaCliente {
 	/**
 	 * Imprime os veiculo no padrão posiçao-placa
 	 */
-	public String imprimirVeiculos(){
+  
+	public String imprimirVeiculosDisponiveis(){
 		StringBuilder sb = new StringBuilder();
 		int cont = 0;
 		for (Veiculo veiculo : veiculos) {
 			sb.append(cont + " - " + veiculo.getPlaca() + "\n");
+			cont++;
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Imprime os veiculo estacionado no padrão posiçao-placa
+	 */
+	public String imprimirVeiculosEstacionados(){
+		StringBuilder sb = new StringBuilder();
+		int cont = 0;
+		for (Veiculo veiculo : veiculos) {
+			if(veiculo.getEstacionado()){
+				sb.append(cont + " - " + veiculo.getPlaca() + "\n");
+			}
 			cont++;
 		}
 		return sb.toString();

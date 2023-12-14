@@ -2,6 +2,7 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,9 +16,14 @@ public class app {
     static ArrayList<Estacionamento> estacionamentos = new ArrayList<Estacionamento>();
     static ArrayList<Cliente> clientes = new ArrayList<Cliente>();
     static ArrayList<Veiculo> veiculos = new ArrayList<Veiculo>();
+    static private IFabrica<Veiculo> fabricaVeiculo;
 
     public static void main(String args[]) throws IOException{
-        carregarDados();
+        try{
+            carregarDados();
+        }catch(FileNotFoundException e){
+            System.out.println("Não foi possível encontrar um dos arquivos: " + e.getLocalizedMessage());
+        }
         menu();
     }
 
@@ -86,6 +92,9 @@ public class app {
                 }
                 menu();
                 break;
+            default:
+                menu();
+                break;
         }
     }
 
@@ -116,14 +125,14 @@ public class app {
                 System.out.print(total);
                 menu();
                 break;
-             case 2:
+            case 2:
                 // System.out.println("Selecione(1-janeiro e assim por diante)");
                 // int mes = s.nextInt();
                 // total = est.arrecadacaoNoMes(mes);
                 // System.out.println(total);
                 menu();
                 break;
-             case 3:
+            case 3:
                 total = est.valorMedioPorUso();
                 System.out.println(total);
                 menu();
@@ -132,6 +141,9 @@ public class app {
                 // System.out.println("Selecione(1-janeiro e assim por diante)");
                 // int mes1 = s.nextInt();
                 // System.out.println(est.top5Clientes(mes1));
+                menu();
+                break;
+            default:
                 menu();
                 break;
         }
@@ -198,11 +210,19 @@ public class app {
                 Estacionamento e1 = seletorEstacionamentos();
 
                 //Chama o menu novamente se o estacionamento não possuir clientes
-                if(e1.getClientes().size() <= 0){ menu(); }
+                if(e1.getClientes().size() <= 0){ 
+                    System.out.println("Estacionamento não possui clientes");
+                    menu();
+                }
 
                 Cliente c1 = seletorClientePorEstacionamento(e1);
+
+                if(c1.getVeiculosCount() <= 0){ 
+                    System.out.println("Cliente selecionado não possui veículos cadastrados");
+                    menu();
+                }
                 
-                Veiculo v1 = seletorVeiculoPorCliente(c1);
+                Veiculo v1 = seletorVeiculosDisponiveisPorCliente(c1);
 
                 System.out.print("Quer algum serviço?\n\n");
                 System.out.print("  1-Manobrista?\n");
@@ -236,15 +256,23 @@ public class app {
                 System.out.print("\033\143");
 
                 Estacionamento e2 = seletorEstacionamentos();
-                if(e2.getClientes().size() <= 0){ menu(); }
+
+                if(e2.getClientes().size() <= 0){ 
+                    System.out.println("Estacionamento não possui clientes");
+                    menu();
+                }
 
                 Cliente c2 = seletorClientePorEstacionamento(e2);
 
-                if(c2.getVeiculosCount() <= 0){ menu(); }
+                if(c2.getVeiculosCount() <= 0){ 
+                    System.out.println("Cliente selecionado não possui veículos cadastrados");
+                    menu();
+                }
             
-                Veiculo v2 = seletorVeiculoPorCliente(c2);
+                Veiculo v2 = seletorVeiculosEstacionadosPorCliente(c2);
 
-                System.out.println("Total pago pelo cliente: " + e2.sair(v2.getPlaca()) + " ");
+                System.out.println("Total pago pelo cliente: " + c2.calcularPagamento() + " ");
+                e2.sair(v2.getPlaca());
                 menu();
                 break;
             case 5:
@@ -264,13 +292,20 @@ public class app {
                 System.out.print("\033\143");
 
                 Estacionamento est = seletorEstacionamentos();
-
-                if(est.getClientes().size() <= 0){ menu(); }
-
+                if(est.getClientes().size() <= 0){ 
+                    System.out.println("Estacionamento não possui clientes");
+                    menu();
+                }
                 Cliente c4 = seletorClientePorEstacionamento(est);
 
                 System.out.println("Selecione(1-janeiro e assim por diante)");
                 int mes = scannerClientes.nextInt();
+
+                if(mes > 12 ||  mes < 1){
+                    System.out.println("Digite um mê válido da próxima");
+                    menu();
+                }
+
                 double total = c4.arrecadadoNoMes(mes);
                 System.out.println(total);
                 menu();
@@ -284,13 +319,16 @@ public class app {
             }
             menu();
             break;
+            default :
+                menu();
+                break;
         }
     }
 
     public static void Estacionamento() throws IOException{
         System.out.print("Estacionamento\n\n");
         System.out.print("    1-Adicionar cliente\n");
-        System.out.println("    2-Alterar categoria do cliente\n");
+        System.out.print("    2-Alterar categoria do cliente\n");
 
         System.out.print("O que deseja?");
 
@@ -424,6 +462,7 @@ public class app {
                 }
                 menu();
             default:
+                menu();
                 break;
         }
     }
@@ -458,7 +497,7 @@ public class app {
         carregarDadosInternos();
     }
 
-    public static void carregarDadosInternos() throws NumberFormatException, IOException{
+    public static void carregarDadosInternos() throws NumberFormatException, IOException, FileNotFoundException{
         //ClienteEstacionamento
         BufferedReader brec = new BufferedReader(new FileReader("estacionamentoClientes.txt"));
         String linhaec = "";
@@ -523,8 +562,9 @@ public class app {
         String placa = s.nextLine();
 
         int id = veiculos.size();
-
-        Veiculo v = new Veiculo(id, placa);
+        Veiculo v = fabricaVeiculo.create();
+        v.setId(id);
+        v.setPlaca(placa);
 
         bw.newLine();
         bw.write(v.getPlaca());
@@ -565,11 +605,22 @@ public class app {
         return c;
     }
 
-    public static Veiculo seletorVeiculoPorCliente(Cliente c){
+    public static Veiculo seletorVeiculosDisponiveisPorCliente(Cliente c){
         Scanner seletor = new Scanner(System.in);
 
         System.out.print("Qual veiculo?\n\n");
-        System.out.println(c.imprimirVeiculos());
+        System.out.println(c.imprimirVeiculosDisponiveis());
+
+        int selecao6 = seletor.nextInt(); 
+
+        return c.getVeiculo(selecao6);       
+    }
+
+    public static Veiculo seletorVeiculosEstacionadosPorCliente(Cliente c){
+        Scanner seletor = new Scanner(System.in);
+
+        System.out.print("Qual veiculo?\n\n");
+        System.out.println(c.imprimirVeiculosEstacionados());
 
         int selecao6 = seletor.nextInt(); 
 
