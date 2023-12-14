@@ -9,23 +9,21 @@ public class Horista implements ICategoriaCliente{
         this.cliente=obj;
     }
 
-    /**
-	 * Retorna o valor pago pelo Horista.
-	 */
     @Override
     public double calcularPagamento(){
-        System.out.print("Horista\n");
         double total = 0d;
 
         for(Veiculo c: this.cliente.getVeiculos()){
             if(c.getEstacionado() == true){
                 for(UsoDeVaga u: c.getUsos()){
                     if(u.getStatus() == false){
-                        u.sair();
                         total = u.getValorPago();
+                        u.fecharUso();
                     }
                 }
             }
         }
+
         return total;
+    }
 }

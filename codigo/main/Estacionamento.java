@@ -1,7 +1,5 @@
 package main;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,6 +19,13 @@ public class Estacionamento{
 	private int vagasPorFileira;
     private int quantVagas;
 
+	/**
+	 * Construtor da classe Estacionamento
+	 * @param id identificação do estacionamento, nunca repete
+	 * @param nome nome do estacionamento
+	 * @param fileiras quantidade de fileira no estacionamento
+	 * @param vagasPorFila quantidade de vagas por fileira
+	 */
 	public Estacionamento(Integer id, String nome, int fileiras, int vagasPorFila) {
 		this.id = id;
 		this.nome=nome;
@@ -31,25 +36,27 @@ public class Estacionamento{
 	}
 
 	/**
-	 * Adiciona um cliente no estacionamento.
-	 * @param cliente
-	 * @throws IOException
+	 * Adiciona um novo cliente ao estacionamento
+	 * @param cliente cliente a ser adicionado
 	 */
-
-	public void addCliente(Cliente cliente) throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter("estacionamentoClientes.txt", true));
-		
-		try {
-			if(clientes.get(cliente.getId()) == null){
-				clientes.put(cliente.getId(), cliente);
-				bw.newLine();
-				bw.write(this.id+";"+cliente.getId());
-			}
-        } catch (Exception e) {
-            throw(e);
-        }
+	public void addCliente(Cliente cliente) {
+		clientes.put(cliente.getId(), cliente);
 	}
 
+	/**
+	 * Envia o comando para a Dao salvar o novo cliente no arquivo
+	 * @param cliente cliente a ser salvo no arquivo
+	 * @throws IOException
+	 */
+	public void salvarCliente(Cliente cliente) throws IOException{
+		Dao.salvarClienteEstacionamento(cliente, this);
+	}
+
+	/**
+	 * Retorna um cliente especifico pelo identificador dele
+	 * @param id identificação do cliente buscado
+	 * @return Cliente
+	 */
 	public Cliente getById(Integer id){
 		Cliente c = null;
 		try{
@@ -61,7 +68,7 @@ public class Estacionamento{
 	}
 
 	/**
-	 * Gera de maneira aleatória as vagas do estacionamento.
+	 * Gera aleatoriamente vagas para o estacionamento
 	 */
 	private void gerarVagas() {
 		for(int i=0; i < quantVagas; i++){
@@ -74,7 +81,8 @@ public class Estacionamento{
 	}
 
 	/**
-	 * Recupera uma vaga de forma aleatória.
+	 * Retorna um vaga selecionada
+	 * @return
 	 */
 	public Vaga getVagaAleatoria(){
 		Vaga valueVagaDisp = null;
@@ -87,40 +95,11 @@ public class Estacionamento{
 	}
 
 	/**
-	 * Adiciona um veículo em uma vaga do estacionamento.
-	 * @param placa
-	 */
-	public void estacionar(String placa) {   
-		
-		try{
-			Cliente cliente = clientes.entrySet().stream().filter(x -> x.getValue().possuiVeiculo(placa)).findFirst().get().getValue(); 
-			Vaga vaga = vagas.entrySet().stream().filter(v -> v.getValue().disponivel()).findFirst().get().getValue();
-			cliente.getVeiculo(placa).estacionar(vaga);	
-		}catch(NullPointerException npe){
-			npe.notify();
-		}
-
-		// for(var entryClientes : clientes.entrySet()){
-        //     Cliente valueCliente = entryClientes.getValue(); // Atribui o value do getValue a uma variável para ficar mais facil de trabalhar
-		// 	if(valueCliente.possuiVeiculo(placa)){
-		// 		for (var entryVagas : vagas.entrySet()) {
-        //             if(entryVagas.getValue().disponivel()){
-        //                 Vaga valueVagaDisp = entryVagas.getValue();
-        //                 valueCliente.getVeiculo(placa).estacionar(valueVagaDisp);
-        //                 break;
-        //             }
-        //         }
-		// 	}
-		// }
-	}
-
-	/**
-	 * Adiciona um veículo em uma vaga do estacionamento utilizando um dos serviços disponíveis.
-	 * @param placa
-	 * @param serv
+	 * Estaciona um veiculo dentro do estacionamento
+	 * @param placa placa do veiculo a ser estacionado, é necessario para busca
+	 * @param serv servico selecionado pelo cliente
 	 */
 	public void estacionar(String placa, Servicos serv) {
-		
 		try{
 			Cliente cliente = clientes.entrySet().stream().filter(x -> x.getValue().possuiVeiculo(placa)).findFirst().get().getValue(); 
 			Vaga vaga = vagas.entrySet().stream().filter(v -> v.getValue().disponivel()).findFirst().get().getValue();
@@ -128,58 +107,45 @@ public class Estacionamento{
 		}catch(NullPointerException npe){
 			npe.notify();
 		}
-		
-
-		// for(var entryClientes : clientes.entrySet()){
-        //     Cliente valueCliente = entryClientes.getValue(); // Atribui o value do getValue a uma variável para ficar mais facil de trabalhar
-		// 	if(valueCliente.possuiVeiculo(placa)){
-		// 		for (var entryVagas : vagas.entrySet()) {
-        //             if(entryVagas.getValue().disponivel()){
-        //                 Vaga valueVagaDisp = entryVagas.getValue();
-        //                 valueCliente.getVeiculo(placa).estacionar(valueVagaDisp, serv);
-        //                 break;
-        //             }
-        //         }
-		// 	}
-		// }
-	}
-
-	public List<Cliente> getClientes(){
-        List<Cliente> listaCliente = new ArrayList<Cliente>(this.clientes.values());
-		return listaCliente;
 	}
 
 	/**
-	 * Remove o veículo de uma vaga do estacionamento.
-	 * @param placa
+	 * @return Um mapa dos clientes do estacionamento tendo o id como chave
 	 */
-	public void sair(String placa) {
-		double total = 0d;
+	public Map<Integer, Cliente> getMapCliente(){
+		return this.clientes;
+	}
 
+
+	/**
+	 * Retira um veiculo do estacionamento
+	 * @param placa placa do veiculo a ser retirado
+	 * @return valor pago pelo uso de vaga
+	 * @throws IOException
+	 */
+	public double sair(String placa) throws IOException {
+		Cliente c = clientes.entrySet().stream().filter(x -> x.getValue().possuiVeiculo(placa)).findFirst().get().getValue();
 		ArrayList<UsoDeVaga> usos = clientes.entrySet().stream().filter(x -> x.getValue().possuiVeiculo(placa)).findFirst().get().getValue().getVeiculo(placa).getUsos(); 
 		Optional<UsoDeVaga> usosOpt = usos.stream().filter(u -> !u.getStatus()).findAny();
 
+		double valor = 0d;
+
 		if(usosOpt.isPresent()){
 			UsoDeVaga usoReal = (UsoDeVaga)usosOpt.get();
-			usoReal.sair();
+			valor = usoReal.sair();
+			if(valor == -1d){ 
+				System.out.println("Veículo não permaneceu tempo suficiente");
+				valor = 0d;
+			 }else{
+				Dao.salvarUsoDeVaga(c, c.getVeiculo(placa), this, usoReal);
+			 }
 		}
-		// for(var entryClientes : clientes.entrySet()){
-		// 	if(entryClientes.getValue().possuiVeiculo(placa)){
-        //         Cliente value = entryClientes.getValue();
-		// 		for(UsoDeVaga uv : value.getVeiculo(placa).getUsos()){
-		// 			if(!uv.getStatus()){ 
-		// 				if(total > 0){
-		// 					uv.sair();
-		// 					uv.getVaga().sair();
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
+		return valor;
 	}
 
+	//#region Relatórios
 	/**
-	 * Retorna o total arrecadado pelo estacionamento.
+	 * @return Total arrecadado pelo estacionamento
 	 */
 	public double totalArrecadado() {
         double totalCliente = 0;
@@ -192,10 +158,17 @@ public class Estacionamento{
         
 	}
 
-	//public double arrecadacaoNoMes(int mes) {}
+	/**
+	 * @param mes
+	 * @return Valor arrecadado em um mês pelo estacionamento
+	 */
+	public double arrecadacaoNoMes(int mes) {
+        double total = clientes.entrySet().stream().mapToDouble(x -> x.getValue().arrecadadoNoMes(mes)).sum();
+        return total;
+    }
 
 	/**
-	 * Retorna o valor médio pelo uso de vaga do estacionamento.
+	 * @return Valor médio dos usos de vagas do estacionamento
 	 */
 	public double valorMedioPorUso() {
         double mediaPorUso = 0;
@@ -207,13 +180,18 @@ public class Estacionamento{
 		return mediaPorUso;
 	}
 
-	//public String top5Clientes(int mes) {}
+	public String top5Clientes(int mes) { return ""; }
+	//#endregion
 
 	@Override
 	public String toString(){
 		return this.nome;
 	}
 
+	/**
+	 * Lista o cliente do estacionamento
+	 * @return string builder dos clientes
+	 */
     public String toStringClientes(){
         StringBuilder b = new StringBuilder();
 
@@ -223,10 +201,9 @@ public class Estacionamento{
         return b.toString();
     }
 
-	public Map<Integer, Vaga> getVagas(){
-		return this.vagas;
-	}
-
+	/**
+	 * @return Valor médio dos usos de vagas pr clientes horistas
+	 */
 	public double valorMedio(){
 		double total = 0d;
 		int horistas = 0;
@@ -239,4 +216,25 @@ public class Estacionamento{
 		}
 		return total/horistas;
 	}
+
+	//#region getter e setters
+	public Integer getId(){
+		return this.id;
+	}
+
+	/**
+	 * @return Um mapa com as vagas do estacionamento
+	 */
+	public Map<Integer, Vaga> getVagas(){
+		return this.vagas;
+	}
+
+	/**
+	 * @return Uma lista com todos os cliente do estacionamento
+	 */
+	public List<Cliente> getClientes(){
+        List<Cliente> listaCliente = new ArrayList<Cliente>(this.clientes.values());
+		return listaCliente;
+	}
+	//#endregion
 }

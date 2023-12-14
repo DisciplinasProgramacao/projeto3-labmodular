@@ -32,39 +32,22 @@ public class DeTurno implements ICategoriaCliente{
         }
     }
 
-    /**
-	 * Calcular o valor que dece ser pago pelo cliente.
-	 */
     @Override
     public double calcularPagamento(){
         double valor=200.00;
         for(Veiculo v: cli.getVeiculos()){
             for(UsoDeVaga x:v.getUsos()){
                 if(!estaDentroDoTurno((x.getHoraEntrada()),x.getHoraSaida())){
-                    valor+=calcularValorAdicional(x.getHoraEntrada(),x.getHoraSaida());
+                    valor += calcularValorAdicional(x.getHoraEntrada(),x.getHoraSaida());
                 }
             }
         }
         return valor;
     }
    
-
-    /**
-	 * Verifica se o cliente está dentro do turno.
-	 * @param horaEntrada
-	 * @param horaSaida
-	 */
-
     private boolean estaDentroDoTurno(LocalTime horaEntrada, LocalTime horaSaida) {
         return (horaEntrada.compareTo(inicioTurno) >= 0) && (horaSaida.compareTo(fimTurno) <= 0);
     }
-
-
-    /**
-	 * Calcular o valor adicional a pagar pelo turno.
-	 * @param horaEntrada
-	 * @param horaSaida
-	 */
 
     private double calcularValorAdicional(LocalTime horaEntrada, LocalTime horaSaida) {
         double taxaHoraria = 10.0; 
@@ -79,7 +62,6 @@ public class DeTurno implements ICategoriaCliente{
         }
     
         System.out.print("DeTurno");
-
         return (minutosForaDoTurno / 60.0) * taxaHoraria;
     }
 }

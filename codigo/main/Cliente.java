@@ -1,5 +1,7 @@
 package main;
 
+import java.io.IOException;
+
 /*
  * Classe criada 04/10/2023
  * 
@@ -49,6 +51,11 @@ public class Cliente implements ICategoriaCliente {
 		if(!this.possuiVeiculo(veiculo.getPlaca())){
 			veiculo.atribuirDono();
 			veiculos.add(veiculo);
+			try {
+				Dao.salvarClienteVeiculo(this, veiculo);
+			} catch (IOException e) {
+				e.getLocalizedMessage();
+			}
 		}
 	}
 
@@ -112,8 +119,13 @@ public class Cliente implements ICategoriaCliente {
 
 		for(Veiculo v : veiculos){ 
 			for(UsoDeVaga u : v.getUsos()){
-				if(v.getUsosCount() > 0 && u.getVaga().getNomeEstacionamento() == estacionamento){
-					b.append(u.getVaga().getNomeEstacionamento() + " - " + u.getData()+" - R$" + String.format("%.2f", u.getValorPago())+"\n");
+				if(v.getUsosCount() > 0 && u.getVaga().getNomeEstacionamento() == estacionamento && u.getStatus() == true){
+					String valorPago = String.format("%.2f", u.getValorPago());
+					b.append(u.getVaga().getNomeEstacionamento() 
+						+ " - " + u.getData() 
+						+ " - R$" + valorPago 
+						+ " - " + v.getPlaca() 
+						+ " - " + u.getServicos() + "\n");
 				}
 			}
 		}
@@ -143,9 +155,9 @@ public class Cliente implements ICategoriaCliente {
 	}
 
 	/**
-	 * Imprime os veiculo no padrão posiçao-placa
+	 * Imprime os veiculo disponiveis no padrão posiçao-placa
+	 * @return String
 	 */
-  
 	public String imprimirVeiculosDisponiveis(){
 		StringBuilder sb = new StringBuilder();
 		int cont = 0;
@@ -157,7 +169,8 @@ public class Cliente implements ICategoriaCliente {
 	}
 
 	/**
-	 * Imprime os veiculo estacionado no padrão posiçao-placa
+	 * Imprime os veiculo estacionados no padrão posiçao-placa
+	 * @return String
 	 */
 	public String imprimirVeiculosEstacionados(){
 		StringBuilder sb = new StringBuilder();
@@ -207,7 +220,7 @@ public class Cliente implements ICategoriaCliente {
 		return this.nome + " - " + this.id; 
 	}
 
-	//GET E SET
+	//#region Getters e setters
 	public Integer getId(){
 		return this.id;
 	}
@@ -223,4 +236,5 @@ public class Cliente implements ICategoriaCliente {
 	public ICategoriaCliente getCategoria(){
 		return this.categoria;
 	}
+	//#endregion
 }

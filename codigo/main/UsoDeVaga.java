@@ -16,23 +16,14 @@ import java.time.Duration;
 	private Servicos serviço;
 	private LocalDateTime data;
 
-	/**
-	 * Cria um novo uso de vaga.
-	 * @param vaga
-	 */
-	public UsoDeVaga(Vaga vaga) {
-		this.vaga= vaga;
-		this.entrada=LocalTime.now();
-		this.saida= null;
-		this.valorPago=0;
-		data=LocalDateTime.now();
-	}
+	// public UsoDeVaga(Vaga vaga) {
+	// 	this.vaga= vaga;
+	// 	this.entrada=LocalTime.now();
+	// 	this.saida= null;
+	// 	this.valorPago=0;
+	// 	data=LocalDateTime.now();
+	// }
 
-	/**
-	 * Cria um novo uso de vaga com serviço.
-	 * @param vaga
-	 * @param serv
-	 */
 	public UsoDeVaga(Vaga vaga, Servicos serv){
 		this.vaga= vaga;
 		this.entrada=LocalTime.now();
@@ -41,21 +32,18 @@ import java.time.Duration;
 		this.serviço = serv;
 	}
 
-	/**
-	 * USADO PARA CARGA DE DADOS INICIAL
-	 */
-	public UsoDeVaga(Vaga vaga, String inicio, String fim){
+	//USADO PARA CARGA DE DADOS INICIAL
+	public UsoDeVaga(Vaga vaga, String inicio, String fim, Servicos serv){
 		this.vaga = vaga;
 		this.entrada = LocalTime.parse(inicio);
 		this.saida = LocalTime.parse(fim);
 		this.valorPago = this.calcularValor();
 		this.status = true;
 		this.data = LocalDateTime.now();
+		this.serviço = serv;
 	}
 
-	/**
-	 * UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
-	 */
+	//UTILIZADO PARA COMPLEMENTAR O CONSTRUTOR DA CARGA DE DADOS
 	public double calcularValor(){
 		Duration duracao=Duration.between(this.entrada,this.saida);
 		Double horas=(double)duracao.toMinutes()/60;
@@ -71,47 +59,42 @@ import java.time.Duration;
 		return valorPago;
 	}
 
-	/**
-	 * Remove o veículo da vaga.
-	 */
+	public void fecharUso(){
+		this.status = true;
+	}
+
 	public double sair() {
-	  this.saida = LocalTime.now();
-	  Duration duracao=Duration.between(this.entrada,saida);
-	  long hora=duracao.toHours();
-	  long minutos=duracao.toMinutes()/60;
-	  double tempoDeUso = hora+minutos;
+		Duration duracao = Duration.between(this.entrada, LocalTime.now());
+		double tempoDeUso = duracao.toMinutes();
 
-	  //Verificar
-	  this.vaga.sair();
-	  this.status = true;
+		if(tempoDeUso >= this.serviço.tempoMin()){
+			this.vaga.sair();
+			this.data = LocalDateTime.now();
+			this.saida = LocalTime.now();
 
-	  this.data = LocalDateTime.now();
-
-	  if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
-		this.valorPago = VALOR_MAXIMO;
-		return VALOR_MAXIMO;
-	  }else{
-		this.valorPago = valorPago();
-		return tempoDeUso*FRACAO_USO;
-	  }
+			if(tempoDeUso/FRACAO_USO > VALOR_MAXIMO){
+				this.valorPago = VALOR_MAXIMO;
+				return VALOR_MAXIMO;
+			}else{
+				this.valorPago = tempoDeUso * VALOR_FRACAO + serviço.valorServico();
+				return valorPago;
+			}
+		}else{ return -1d; }
 	}
 
-	/**
-	 * Retorna o valor pago pelo uso da vaga.
-	 */
-	public double valorPago() {
-		Duration duracao=Duration.between(this.entrada,saida);
-		long hora=duracao.toHours();
-		long minutos=duracao.toMinutes()/60;
-		double tempoDeUso = hora+minutos;
+	// public double valorPago() {
+	// 	Duration duracao=Duration.between(this.entrada,saida);
+	// 	long hora=duracao.toHours();
+	// 	long minutos=duracao.toMinutes()/60;
+	// 	double tempoDeUso = hora+minutos;
 
-		valorPago = tempoDeUso * VALOR_FRACAO;
-		if(valorPago>VALOR_MAXIMO){
-           valorPago=VALOR_MAXIMO;
-		}
-		if(serviço == null){ return valorPago; }
-		else{ return valorPago + serviço.valorServico(); }
-	}
+	// 	valorPago = tempoDeUso * VALOR_FRACAO;
+	// 	if(valorPago>VALOR_MAXIMO){
+    //        valorPago=VALOR_MAXIMO;
+	// 	}
+	// 	if(serviço == null){ return valorPago; }
+	// 	else{ return valorPago + serviço.valorServico(); }
+	// }
 
 	public int getMesEntrada(){
 		return this.data.getMonthValue();
@@ -137,5 +120,9 @@ import java.time.Duration;
 
 	public double getValorPago(){
 		return this.valorPago;
+	}
+
+	public Servicos getServicos(){
+		return this.serviço;
 	}
 }

@@ -13,16 +13,15 @@ public class Veiculo {
 	private boolean estacionado;
 	private ArrayList<UsoDeVaga> usos = new ArrayList<UsoDeVaga>(); //Mudar para arrayList
 
+	public Veiculo(){
+		this.estacionado = false;
+	}
+
 	/**
 	 * Define um veiculo com id e placa
 	 * @param id
 	 * @param placa
 	 */
-
-	public Veiculo(){
-		this.estacionado = false;
-	}
-  
 	public Veiculo(int id, String placa) {
 		this.id = id;
 		this.placa = placa;
@@ -33,22 +32,22 @@ public class Veiculo {
 	 * Quando estacionar, muda o status da vaga para disponivel=false..
 	 * @param vaga
 	 * */
-	public boolean estacionar(Vaga vaga) {
-		boolean res = true;
-		if(vaga.disponivel()) {
-			try {
-				vaga.estacionar();
-				UsoDeVaga usoVaga = new UsoDeVaga(vaga);
-				this.usos.add(usoVaga);
-				this.setEstacionado(true);
-			} catch(Exception e) {
-				res = false;
-			}
-		} else {
-			res = false;
-		}
-		return res;
-	}
+	// public boolean estacionar(Vaga vaga) {
+	// 	boolean res = true;
+	// 	if(vaga.disponivel()) {
+	// 		try {
+	// 			vaga.estacionar();
+	// 			UsoDeVaga usoVaga = new UsoDeVaga(vaga);
+	// 			this.usos.add(usoVaga);
+	// 			this.setEstacionado(true);
+	// 		} catch(Exception e) {
+	// 			res = false;
+	// 		}
+	// 	} else {
+	// 		res = false;
+	// 	}
+	// 	return res;
+	// }
 
 	/**
 	 * Estaciona um veiculo com a utilização de um serviço
@@ -75,7 +74,7 @@ public class Veiculo {
 	
 	/**
 	 * Quando sair da vaga, invoca o método sair da classe Vaga
-   * e disponibiliza a mesma como disponivel=true;
+  	 * e disponibiliza como disponivel=true;
 	 * @param vaga
 	 * */
 	public boolean sair(Vaga vaga) {
@@ -96,7 +95,7 @@ public class Veiculo {
 	public double totalArrecadado() {
 		double total = 0.0;
 		for(UsoDeVaga uv : usos) {
-			total += uv.valorPago();
+			total += uv.getValorPago();
 		}
 		return total;
 	}
@@ -109,16 +108,8 @@ public class Veiculo {
 		this.getUsos().add(u);
 	}
 
-	/**
-	 * Retorna o total arrecadado no mes solicitado.
-	 * @param mes
-	 */
 	public double arrecadadoNoMes(int mes) {
-		double total = 0.0;
-		for(UsoDeVaga u : usos){
-			if(u.getMesEntrada() == mes){ total += u.calcularValor();  }
-		}
-		return total;
+		return 0.0;
 	}
 	
 	/**

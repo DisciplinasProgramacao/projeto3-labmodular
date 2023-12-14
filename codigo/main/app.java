@@ -1,23 +1,14 @@
 package main;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
-
 import interfaces.ICategoriaCliente;
 
 public class app {
-
-    static ArrayList<Estacionamento> estacionamentos = new ArrayList<Estacionamento>();
-    static ArrayList<Cliente> clientes = new ArrayList<Cliente>();
-    static ArrayList<Veiculo> veiculos = new ArrayList<Veiculo>();
-    static private IFabrica<Veiculo> fabricaVeiculo;
-
+    
     public static void main(String args[]) throws IOException{
         try{
             carregarDados();
@@ -27,6 +18,9 @@ public class app {
         menu();
     }
 
+    /**
+     * Menu principa que faz a chamada dos outros menus do sistema
+     */
     public static void menu(){
         Scanner s = new Scanner(System.in);
 
@@ -54,12 +48,19 @@ public class app {
                 try {
                     Estacionamento();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    e.getLocalizedMessage();
                 }
+                break;
+            default:
+                menu();
                 break;
         }
     }
 
+    //#region Menus
+    /**
+     * Menu de listagens
+     */
     public static void Listagens(){
         System.out.print("Listagens\n\n");
         System.out.print("  1-Listar Clientes\n");
@@ -75,19 +76,19 @@ public class app {
 
         switch(opcao){
             case 1:
-                for(ICategoriaCliente c : clientes){
+                for(ICategoriaCliente c : Dao.clientes){
                     System.out.println(c.toString());
                 }
                 menu();
                 break;
              case 2:
-                for(Veiculo v: veiculos){
+                for(Veiculo v: Dao.veiculos){
                     System.out.println(v.toString());
                 }
                 menu();
                 break;
              case 3:
-                for(Estacionamento e : estacionamentos){
+                for(Estacionamento e : Dao.estacionamentos){
                     System.out.println(e.toString());
                 }
                 menu();
@@ -98,10 +99,13 @@ public class app {
         }
     }
 
+    /**
+     * Menu de relatórios
+     */
     public static void Relatorios(){
         System.out.print("Relatorios\n\n");
         System.out.print("  1-Valor arrecadado estacionamento\n");
-        System.out.print("  2-Valor arrecadado mês\n");
+        System.out.print("  2-Valor arrecadado mês(Estacionamento)\n");
         System.out.print("  3-Valor médio de utilização\n");
         System.out.print("  4-Ranking dos clientes\n\n");
 
@@ -113,11 +117,11 @@ public class app {
 
         double total = 0d;
         System.out.println("Selecione");
-        for(int i = 0; i< estacionamentos.size(); i++){
-            System.out.println(i + "- " + estacionamentos.get(i).toString());
+        for(int i = 0; i< Dao.estacionamentos.size(); i++){
+            System.out.println(i + "- " + Dao.estacionamentos.get(i).toString());
         }
         int selecao = s.nextInt();
-        Estacionamento est = estacionamentos.get(selecao);
+        Estacionamento est = Dao.estacionamentos.get(selecao);
 
         switch(opcao){
             case 1:
@@ -126,10 +130,15 @@ public class app {
                 menu();
                 break;
             case 2:
-                // System.out.println("Selecione(1-janeiro e assim por diante)");
-                // int mes = s.nextInt();
-                // total = est.arrecadacaoNoMes(mes);
-                // System.out.println(total);
+                    System.out.println("Selecione(1-janeiro e assim por diante)");
+                    int mes = s.nextInt();
+                     if(mes > 12 ||  mes < 1){
+                        System.out.println("Digite um mês válido da próxima");
+                        menu();
+                    }
+
+                    total = est.arrecadacaoNoMes(mes);
+                    System.out.println(total);
                 menu();
                 break;
             case 3:
@@ -149,6 +158,9 @@ public class app {
         }
     }
 
+    /**
+     * Menu de clientes
+     */
     public static void Clientes(){
         System.out.print("Clientes\n\n");
         System.out.print("  1-Cadastrar cliente\n");
@@ -156,8 +168,9 @@ public class app {
         System.out.print("  3-Estacionar veiculo\n");
         System.out.print("  4-Retirar veiculo\n");
         System.out.print("  5-Usos de estacionamentos\n");
-        System.out.print("  6-Arrecadado no mês\n\n");
-        System.out.print("  7-Médio por horista\n\n");
+        System.out.print("  6-Arrecadado no mês\n");
+        System.out.print("  7-Médio por horista\n");
+        System.out.print("  8-Cadastrar Veiculo\n\n");
 
         System.out.print("O que deseja?");
 
@@ -170,7 +183,7 @@ public class app {
                 //Limpar o console em qualquer SO
                 System.out.print("\033\143");
                 try {
-                    cadastrarCliente();
+                    Dao.cadastrarCliente();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -184,15 +197,15 @@ public class app {
                     Cliente c = seletorCliente();
                     System.out.print("Qual veiculo deseja adicionar?\n\n");
 
-                    for(int i = 0; i< veiculos.size(); i++){
-                        Veiculo tempVeiculo = veiculos.get(i);
+                    for(int i = 0; i< Dao.veiculos.size(); i++){
+                        Veiculo tempVeiculo = Dao.veiculos.get(i);
                         if(!tempVeiculo.getTemDono()){
                             System.out.println(tempVeiculo.getId() + "- " + tempVeiculo.getPlaca());
                         }
                     }
 
                     int selecao = scannerClientes.nextInt();
-                    Veiculo v = veiculos.get(selecao);
+                    Veiculo v = Dao.veiculos.get(selecao);
 
                     
                     c.addVeiculo(v);
@@ -245,7 +258,8 @@ public class app {
                         e1.estacionar(v1.getPlaca(), serv3);
                         break;
                     case 4:
-                        e1.estacionar(v1.getPlaca());
+                        Servicos serv4 = new Servicos("NENHUM");
+                        e1.estacionar(v1.getPlaca(), serv4);
                         break;
                         
                 }
@@ -256,7 +270,6 @@ public class app {
                 System.out.print("\033\143");
 
                 Estacionamento e2 = seletorEstacionamentos();
-
                 if(e2.getClientes().size() <= 0){ 
                     System.out.println("Estacionamento não possui clientes");
                     menu();
@@ -271,8 +284,12 @@ public class app {
             
                 Veiculo v2 = seletorVeiculosEstacionadosPorCliente(c2);
 
-                System.out.println("Total pago pelo cliente: " + c2.calcularPagamento() + " ");
-                e2.sair(v2.getPlaca());
+                try{
+                    e2.sair(v2.getPlaca());
+                    System.out.println("Total pago pelo cliente: " + c2.calcularPagamento() + " ");
+                }catch(IOException e){
+                    System.out.println(e.getLocalizedMessage());
+                }
                 menu();
                 break;
             case 5:
@@ -280,7 +297,6 @@ public class app {
                 System.out.print("\033\143");
 
                 Estacionamento e3 = seletorEstacionamentos();
-
                 Cliente c3 = seletorClientePorEstacionamento(e3);
 
                 System.out.println(c3.usoDeEstacionamento(e3.toString()));
@@ -302,7 +318,7 @@ public class app {
                 int mes = scannerClientes.nextInt();
 
                 if(mes > 12 ||  mes < 1){
-                    System.out.println("Digite um mê válido da próxima");
+                    System.out.println("Digite um mês válido da próxima");
                     menu();
                 }
 
@@ -311,24 +327,33 @@ public class app {
                 menu();
                 break;
             case 7:
-            try{
-                Estacionamento e = seletorEstacionamentos();
-                System.out.println(String.format("%.2f", e.valorMedio()));
-            }catch(Exception e){
-                System.out.print(e);
-            }
-            menu();
-            break;
+                try{
+                    Estacionamento e = seletorEstacionamentos();
+                    System.out.println(String.format("%.2f", e.valorMedio()));
+                }catch(Exception e){
+                    System.out.print(e);
+                }
+                menu();
+                break;
+            case 8:
+                try {
+                    Dao.cadastrarVeiculo();
+                } catch (IOException e) {
+                    e.getLocalizedMessage();
+                }
             default :
                 menu();
                 break;
         }
     }
 
+    /**
+     * Menu do estacionamento
+     */
     public static void Estacionamento() throws IOException{
         System.out.print("Estacionamento\n\n");
         System.out.print("    1-Adicionar cliente\n");
-        System.out.print("    2-Alterar categoria do cliente\n");
+        System.out.print("    2-Alterar categoria do cliente\n\n");
 
         System.out.print("O que deseja?");
 
@@ -339,21 +364,21 @@ public class app {
         switch (opcao) {
             case 1:
                 System.out.println("Qual estacionamento?\n\n");
-                for(int i = 0; i< estacionamentos.size(); i++){
-                    System.out.println(i+"- "+ estacionamentos.get(i).toString());
+                for(int i = 0; i< Dao.estacionamentos.size(); i++){
+                    System.out.println(i+"- "+ Dao.estacionamentos.get(i).toString());
                 }
 
                 int selecao1 = s.nextInt();
-                Estacionamento e1 = estacionamentos.get(selecao1);
+                Estacionamento e1 = Dao.estacionamentos.get(selecao1);
 
                 System.out.println("Qual cliente?\n\n");
 
-                for(int i = 0; i< clientes.size(); i++){
-                    System.out.println(clientes.get(i).toString());
+                for(int i = 0; i< Dao.clientes.size(); i++){
+                    System.out.println(Dao.clientes.get(i).toString());
                 }
 
                 int selecao2 = s.nextInt();
-                Cliente c = clientes.get(selecao2);
+                Cliente c = Dao.clientes.get(selecao2);
 
                 System.out.print("Qual categoria?\n\n");
                 System.out.print("0- Mensalista?\n");
@@ -390,22 +415,27 @@ public class app {
 
                         c.setCategoria(new DeTurno(c, turnoSring));
                         break;
+                    
+                    case 2:
+                        c.setCategoria(new Horista(c));    
+                        break;
                     default:
                         System.out.println("Opção inválida");
-                        break;
+                    break;
                 }
                 e1.addCliente(c);
+                Dao.salvarClienteEstacionamento(c, e1);
 
                 menu();
                 break;
             case 2:
                 System.out.println("Qual estacionamento?\n\n");
-                for(int i = 0; i< estacionamentos.size(); i++){
-                    System.out.println(i+"- "+ estacionamentos.get(i).toString());
+                for(int i = 0; i< Dao.estacionamentos.size(); i++){
+                    System.out.println(i+"- "+ Dao.estacionamentos.get(i).toString());
                 }
 
                 int selecaoEstacionamento = s.nextInt();
-                Estacionamento estacionamentoSelecionado = estacionamentos.get(selecaoEstacionamento);
+                Estacionamento estacionamentoSelecionado = Dao.estacionamentos.get(selecaoEstacionamento);
 
                 System.out.println("Qual cliente?\n\n");
 
@@ -466,7 +496,9 @@ public class app {
                 break;
         }
     }
+    //#endregion
 
+    //#region carga de dados
     public static void carregarDados() throws IOException{
         BufferedReader bre = new BufferedReader(new FileReader("estacionamentos.txt"));
         String linhae = "";
@@ -474,7 +506,7 @@ public class app {
         while((linhae = bre.readLine()) != null){
             String[] linhas = linhae.split(";", 0);
             Estacionamento e = new Estacionamento(Integer.parseInt(linhas[0]), linhas[1], Integer.parseInt(linhas[2]), Integer.parseInt(linhas[3]));
-            estacionamentos.add(e);	
+            Dao.estacionamentos.add(e);	
         }
 
         BufferedReader brv = new BufferedReader(new FileReader("veiculos.txt"));
@@ -482,8 +514,11 @@ public class app {
         
         while((linhav = brv.readLine()) != null){
             String[] linhas = linhav.split(";", 0);
-            Veiculo v = new Veiculo(Integer.parseInt(linhas[0]), linhas[1]);
-            veiculos.add(v);
+            Veiculo v = Dao.fabricaVeiculo.create();
+            v.setId(Integer.parseInt(linhas[0]));
+            v.setPlaca(linhas[1]);
+            //Veiculo v = new Veiculo(Integer.parseInt(linhas[0]), linhas[1]);
+            Dao.veiculos.add(v);
         }
 
         BufferedReader brc = new BufferedReader(new FileReader("clientes.txt"));
@@ -492,7 +527,7 @@ public class app {
         while((linhac = brc.readLine()) != null){
             String[] linhas = linhac.split(";", 0);
             Cliente c = new Cliente(linhas[0], Integer.parseInt(linhas[1]), null);
-            clientes.add(c);
+            Dao.clientes.add(c);
         }
         carregarDadosInternos();
     }
@@ -504,7 +539,7 @@ public class app {
         
         while((linhaec = brec.readLine()) != null){
             String[] linhas = linhaec.split(";", 0);
-            estacionamentos.get(Integer.parseInt(linhas[0])).addCliente(clientes.get(Integer.parseInt(linhas[1])));
+            Dao.estacionamentos.get(Integer.parseInt(linhas[0])).addCliente(Dao.clientes.get(Integer.parseInt(linhas[1])));
         }
 
         //ClienteVeiculos
@@ -513,9 +548,8 @@ public class app {
         
         while((linhacv = brcv.readLine()) != null){
             String[] linhas = linhacv.split(";", 0);
-            clientes.get(Integer.parseInt(linhas[0])).addVeiculo(veiculos.get(Integer.parseInt(linhas[1])));
+            Dao.clientes.get(Integer.parseInt(linhas[0])).addVeiculo(Dao.veiculos.get(Integer.parseInt(linhas[1])));
         }
-
 
         //Usos de vagas
         BufferedReader bruv = new BufferedReader(new FileReader("usoDeVagas.txt"));
@@ -524,71 +558,38 @@ public class app {
         while((linhauv = bruv.readLine()) != null){
             String[] linhas = linhauv.split(";", 0);
 
-            Estacionamento e = estacionamentos.get(Integer.parseInt(linhas[2]));
-            UsoDeVaga u = new UsoDeVaga(e.getVagaAleatoria(), linhas[3], linhas[4]);
-            Cliente c = clientes.get(Integer.parseInt(linhas[0]));
+            Estacionamento e = Dao.estacionamentos.get(Integer.parseInt(linhas[2]));
+            UsoDeVaga u = new UsoDeVaga(e.getVagaAleatoria(), linhas[3], linhas[4], new Servicos(linhas[5]));
+            Cliente c = Dao.clientes.get(Integer.parseInt(linhas[0]));
             Veiculo v = c.getVeiculo(linhas[1]);
 
             v.adicionarUso(u);
         }
     }
+    //#endregion
 
-    public static void cadastrarCliente() throws IOException{
-        BufferedWriter bw = new BufferedWriter(new FileWriter("clientes.txt", true));
-
-        Scanner s = new Scanner(System.in);
-
-        System.out.println("Digite o seu nome");
-        String nome = s.nextLine();
-
-        System.out.println("Digite o seu id");
-        Integer id = clientes.size();
-
-        Cliente c = new Cliente(nome, id, null);
-
-        bw.newLine();
-        bw.write(c.toString());
-        bw.close();
-        clientes.add(c);
-
-    }
-
-    public static void cadastrarVeiculo() throws IOException{
-        BufferedWriter bw = new BufferedWriter(new FileWriter("veiculos.txt", true));
-
-        Scanner s = new Scanner(System.in);
-
-        System.out.println("Digite a placa");
-        String placa = s.nextLine();
-
-        int id = veiculos.size();
-        Veiculo v = fabricaVeiculo.create();
-        v.setId(id);
-        v.setPlaca(placa);
-
-        bw.newLine();
-        bw.write(v.getPlaca());
-        bw.close();
-        veiculos.add(v);
-    }
-
-
-    //Mostra na tela o seletor de estacionamentos
+    //#region listas para seleções
+    /**
+     * Mostra na tela o seletor de estacionamentos
+     */
     public static Estacionamento seletorEstacionamentos(){
         Scanner seletor = new Scanner(System.in);
 
         System.out.println("Qual estacionamento?\n\n");
 
-        for(int i = 0; i< estacionamentos.size(); i++){
-            System.out.println(i+"- "+ estacionamentos.get(i).toString());
+        for(int i = 0; i< Dao.estacionamentos.size(); i++){
+            System.out.println(i+"- "+ Dao.estacionamentos.get(i).toString());
         }
 
         int selecioando = seletor.nextInt();
         
-        return estacionamentos.get(selecioando);
+        return Dao.estacionamentos.get(selecioando);
     }
 
-    //Mostra na tela o seletor de clientes do estacionamento
+    /**
+     * Mostra na tela o seletor de clientes do estacionamento
+     * @param e
+     */
     public static Cliente seletorClientePorEstacionamento(Estacionamento e){
         Scanner seletor = new Scanner(System.in);
 
@@ -605,6 +606,10 @@ public class app {
         return c;
     }
 
+    /**
+     * Mostra na tela o seletor de veiculos disponíveis para um cliente específico
+     * @param c
+     */
     public static Veiculo seletorVeiculosDisponiveisPorCliente(Cliente c){
         Scanner seletor = new Scanner(System.in);
 
@@ -616,6 +621,10 @@ public class app {
         return c.getVeiculo(selecao6);       
     }
 
+    /**
+     * Mostra na tela o seletor de veiculos estacionados para um cliente específico
+     * @param c
+     */
     public static Veiculo seletorVeiculosEstacionadosPorCliente(Cliente c){
         Scanner seletor = new Scanner(System.in);
 
@@ -627,16 +636,20 @@ public class app {
         return c.getVeiculo(selecao6);       
     }
 
+    /**
+     * Mostra na tela o seletor de clientes no sistema
+     */
     public static Cliente seletorCliente(){
         Scanner seletor = new Scanner(System.in);
 
         System.out.print("Qual cliente?\n\n");
-        for(Cliente c: clientes){
+        for(Cliente c: Dao.clientes){
             System.out.println(c.toString());
         }
 
         int selecaoCliente = seletor.nextInt();
 
-        return clientes.get(selecaoCliente);
+        return Dao.clientes.get(selecaoCliente);
     }
+    //#endregion
 }
