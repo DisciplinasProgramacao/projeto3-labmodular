@@ -11,6 +11,10 @@ public class Mensalista implements ICategoriaCliente{
     public Mensalista(Cliente c){
         this.cli=c;
     }
+    
+    /**
+	 * Calcula o valor a pagar pelo mensalista.
+	 */
     public double calcularPagamento(){
         System.out.print("Mensalista");
         if(pago){ return 0d; }
