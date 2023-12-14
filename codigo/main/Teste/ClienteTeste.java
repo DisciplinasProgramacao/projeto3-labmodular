@@ -14,7 +14,7 @@ public class ClienteTeste {
 	@BeforeEach
 	public void run() {
 		cliente = new Cliente("Gabriel" , "0");
-		veic = new Veiculo("NYA0978")
+		veic = new Veiculo("NYA0978");
 	}
 	
 	@Test
