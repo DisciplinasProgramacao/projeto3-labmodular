@@ -14,11 +14,17 @@ public class Vaga {
 		this.fila = fila;
 		this.numero = numero;
 	}
-
+	
+	/**
+	 * Atualiza o status da vaga para false quando o veículo é estacionado.
+	 */
 	public void estacionar() {
 		this.disponivel = false;
 	}
 
+	/**
+	 * Atualiza o status da vaga para true quando o veículo é estacionado.
+	 */
 	public void sair() {
 		this.disponivel = true;
 	}
