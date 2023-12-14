@@ -32,6 +32,9 @@ public class DeTurno implements ICategoriaCliente{
         }
     }
 
+    /**
+	 * Calcular o valor que dece ser pago pelo cliente.
+	 */
     @Override
     public double calcularPagamento(){
         double valor=200.00;
@@ -44,11 +47,21 @@ public class DeTurno implements ICategoriaCliente{
         }
         return valor;
     }
-   
+
+    /**
+	 * Verifica se o cliente está dentro do turno.
+	 * @param horaEntrada
+	 * @param horaSaida
+	 */
     private boolean estaDentroDoTurno(LocalTime horaEntrada, LocalTime horaSaida) {
         return (horaEntrada.compareTo(inicioTurno) >= 0) && (horaSaida.compareTo(fimTurno) <= 0);
     }
 
+    /**
+	 * Calcular o valor adicional a pagar pelo turno.
+	 * @param horaEntrada
+	 * @param horaSaida
+	 */
     private double calcularValorAdicional(LocalTime horaEntrada, LocalTime horaSaida) {
         double taxaHoraria = 10.0; 
         long minutosForaDoTurno = 0;
