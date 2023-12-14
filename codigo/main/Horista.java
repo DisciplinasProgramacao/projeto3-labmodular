@@ -9,6 +9,9 @@ public class Horista implements ICategoriaCliente{
         this.cliente=obj;
     }
 
+    /**
+	 * Retorna o valor pago pelo Horista.
+	 */
     @Override
     public double calcularPagamento(){
         double total = 0d;
