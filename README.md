@@ -3,7 +3,10 @@
 O objetivo do projeto é desenvolver um sistema capaz de realizar o gerenciamento de um estacionamento e seus clientes com opções de relatórios e listagens.
 
 ## Instruções
-Abrir somente a pasta [codigo](https://github.com/DisciplinasProgramacao/projeto3-labmodular/tree/master/codigo) quando for testar o projeto.
+Abrir somente a pasta [codigo](https://github.com/DisciplinasProgramacao/projeto3-labmodular/tree/master/codigo) quando for testar o projeto. 
+
+## JavaDocs
+Diretório do arquivo [JavaDocs](https://github.com/DisciplinasProgramacao/projeto3-labmodular/tree/master/docs/javadocs) .
 
 ## Alunos integrantes da equipe
 
