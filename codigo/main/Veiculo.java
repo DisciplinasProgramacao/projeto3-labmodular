@@ -29,27 +29,6 @@ public class Veiculo {
 	}
 
 	/**
-	 * Quando estacionar, muda o status da vaga para disponivel=false..
-	 * @param vaga
-	 * */
-	// public boolean estacionar(Vaga vaga) {
-	// 	boolean res = true;
-	// 	if(vaga.disponivel()) {
-	// 		try {
-	// 			vaga.estacionar();
-	// 			UsoDeVaga usoVaga = new UsoDeVaga(vaga);
-	// 			this.usos.add(usoVaga);
-	// 			this.setEstacionado(true);
-	// 		} catch(Exception e) {
-	// 			res = false;
-	// 		}
-	// 	} else {
-	// 		res = false;
-	// 	}
-	// 	return res;
-	// }
-
-	/**
 	 * Estaciona um veiculo com a utilização de um serviço
 	 * @param vaga
 	 * @param serv

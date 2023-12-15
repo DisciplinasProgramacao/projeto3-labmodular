@@ -13,16 +13,8 @@ import java.time.Duration;
 	private LocalTime saida;
 	private double valorPago;
 	private boolean status = false;
-	private Servicos serviço;
+	private Servicos servico;
 	private LocalDateTime data;
-
-	// public UsoDeVaga(Vaga vaga) {
-	// 	this.vaga= vaga;
-	// 	this.entrada=LocalTime.now();
-	// 	this.saida= null;
-	// 	this.valorPago=0;
-	// 	data=LocalDateTime.now();
-	// }
 
 	 /**
 	 * Cria um novo uso de vaga com serviço.
@@ -34,7 +26,7 @@ import java.time.Duration;
 		this.entrada=LocalTime.now();
 		this.saida= null;
 		this.valorPago=0;
-		this.serviço = serv;
+		this.servico = serv;
 	}
 
 	/**
@@ -47,7 +39,7 @@ import java.time.Duration;
 		this.valorPago = this.calcularValor();
 		this.status = true;
 		this.data = LocalDateTime.now();
-		this.serviço = serv;
+		this.servico = serv;
 	}
 
 	/**
@@ -79,7 +71,7 @@ import java.time.Duration;
 		Duration duracao = Duration.between(this.entrada, LocalTime.now());
 		double tempoDeUso = duracao.toMinutes();
 
-		if(tempoDeUso >= this.serviço.tempoMin()){
+		if(tempoDeUso >= this.servico.tempoMin()){
 			this.vaga.sair();
 			this.data = LocalDateTime.now();
 			this.saida = LocalTime.now();
@@ -88,25 +80,11 @@ import java.time.Duration;
 				this.valorPago = VALOR_MAXIMO;
 				return VALOR_MAXIMO;
 			}else{
-				this.valorPago = tempoDeUso * VALOR_FRACAO + serviço.valorServico();
+				this.valorPago = tempoDeUso * VALOR_FRACAO + servico.valorServico();
 				return valorPago;
 			}
 		}else{ return -1d; }
 	}
-
-	// public double valorPago() {
-	// 	Duration duracao=Duration.between(this.entrada,saida);
-	// 	long hora=duracao.toHours();
-	// 	long minutos=duracao.toMinutes()/60;
-	// 	double tempoDeUso = hora+minutos;
-
-	// 	valorPago = tempoDeUso * VALOR_FRACAO;
-	// 	if(valorPago>VALOR_MAXIMO){
-    //        valorPago=VALOR_MAXIMO;
-	// 	}
-	// 	if(serviço == null){ return valorPago; }
-	// 	else{ return valorPago + serviço.valorServico(); }
-	// }
 
 	public int getMesEntrada(){
 		return this.data.getMonthValue();
@@ -135,6 +113,6 @@ import java.time.Duration;
 	}
 
 	public Servicos getServicos(){
-		return this.serviço;
+		return this.servico;
 	}
 }

@@ -147,9 +147,6 @@ public class app {
                 menu();
                 break;
             case 4:
-                // System.out.println("Selecione(1-janeiro e assim por diante)");
-                // int mes1 = s.nextInt();
-                // System.out.println(est.top5Clientes(mes1));
                 menu();
                 break;
             default:
