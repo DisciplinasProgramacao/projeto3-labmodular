@@ -179,8 +179,7 @@ public class Estacionamento{
         }
 		return mediaPorUso;
 	}
-
-	public String top5Clientes(int mes) { return ""; }
+	
 	//#endregion
 
 	@Override

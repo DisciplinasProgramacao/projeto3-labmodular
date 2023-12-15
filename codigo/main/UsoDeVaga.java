@@ -60,6 +60,9 @@ import java.time.Duration;
 		return valorPago;
 	}
 
+	/**
+	 * Fecha o uso de vaga
+	 * */
 	public void fecharUso(){
 		this.status = true;
 	}
@@ -86,32 +89,58 @@ import java.time.Duration;
 		}else{ return -1d; }
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public int getMesEntrada(){
 		return this.data.getMonthValue();
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public Vaga getVaga(){
 		return this.vaga;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public String getData(){
 		return this.entrada.toString();
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public boolean getStatus(){
 		return this.status;
 	}
+
+	/**
+	 * Getters and Setters
+	 * */
 	public LocalTime getHoraEntrada(){
 		return entrada;
 	}
+
+	/**
+	 * Getters and Setters
+	 * */
 	public LocalTime getHoraSaida(){
 		return saida;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public double getValorPago(){
 		return this.valorPago;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public Servicos getServicos(){
 		return this.servico;
 	}

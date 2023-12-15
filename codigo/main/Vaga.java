@@ -29,14 +29,23 @@ public class Vaga {
 		this.disponivel = true;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public boolean disponivel() {
 		return this.disponivel;
 	}
-
+	
+	/**
+	 * Getters and Setters
+	 * */
 	public String getNomeEstacionamento(){
 		return this.EstacionamentoNome;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public String getDadosVaga(){
 		return this.fila+""+this.numero;
 	}

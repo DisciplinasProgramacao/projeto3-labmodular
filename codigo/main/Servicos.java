@@ -3,7 +3,7 @@ package main;
 import enuns.ServicosEnum;
 
 public class Servicos{
-    ServicosEnum tipoServiço;
+    ServicosEnum tipoServico;
 
     public Servicos(String tipo){
         String t = tipo;
@@ -11,32 +11,44 @@ public class Servicos{
 
         switch(t){
             case "MANOBRISTA":
-                this.tipoServiço = ServicosEnum.MANOBRISTA;
+                this.tipoServico = ServicosEnum.MANOBRISTA;
                 break;
             case"LAVAGEM":
-                this.tipoServiço = ServicosEnum.LAVAGEM;
+                this.tipoServico = ServicosEnum.LAVAGEM;
                 break;
             case"POLIMENTO":
-            this.tipoServiço = ServicosEnum.POLIMENTO;
+            this.tipoServico = ServicosEnum.POLIMENTO;
                 break;
             case"NENHUM":
-                this.tipoServiço = ServicosEnum.NENHUM;
+                this.tipoServico = ServicosEnum.NENHUM;
                 break;
         }
     }
     
+    /**
+	 * Getters and Setters
+	 * */
     public Double valorServico(){
-        return this.tipoServiço.getValor();
+        return this.tipoServico.getValor();
     }
 
+    /**
+	 * Getters and Setters
+	 * */
     public double tempoMin(){
-        return this.tipoServiço.getTempoMin();
+        return this.tipoServico.getTempoMin();
     }
 
+    /**
+	 * Getters and Setters
+	 * */
     public String nome(){
-        return this.tipoServiço.getNome();
+        return this.tipoServico.getNome();
     }
 
+    /**
+	 * Getters and Setters
+	 * */
     public String toString(){
         return nome();
     }

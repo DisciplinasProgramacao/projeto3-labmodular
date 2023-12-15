@@ -86,10 +86,6 @@ public class Veiculo {
 	public void adicionarUso(UsoDeVaga u){
 		this.getUsos().add(u);
 	}
-
-	public double arrecadadoNoMes(int mes) {
-		return 0.0;
-	}
 	
 	/**
 	 * Inclui no uso de vaga, a vaga utilizada.
@@ -105,48 +101,81 @@ public class Veiculo {
 		}
 		return total;
 	}
-	
+
+	/**
+	 * Getters and Setters
+	 * */
 	public String getPlaca() {
 		return this.placa;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public int getUsosCount(){
 		return this.usos.size();
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public ArrayList<UsoDeVaga> getUsos(){
 		return this.usos;
 	}
 
+	/**
+	 * Override toString
+	 * */
 	@Override
 	public String toString(){
 		return this.placa;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public boolean getTemDono(){
 		return this.temDono;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public void atribuirDono(){
 		this.temDono = true;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public boolean getEstacionado(){
 		return this.estacionado;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public void setEstacionado(boolean status){
 		this.estacionado = status;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public int getId(){
 		return this.id;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public void setId(int id){
 		this.id = id;
 	}
 
+	/**
+	 * Getters and Setters
+	 * */
 	public void setPlaca(String placa){
 		this.placa = placa;
 	}
