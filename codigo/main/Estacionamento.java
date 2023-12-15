@@ -159,6 +159,7 @@ public class Estacionamento{
 	}
 
 	/**
+	 * Valor arrecadado em um mês pelo estacionamento
 	 * @param mes
 	 * @return Valor arrecadado em um mês pelo estacionamento
 	 */
@@ -168,6 +169,7 @@ public class Estacionamento{
     }
 
 	/**
+	 * Retorna o valor médio dos usos de vagas do estacionamento
 	 * @return Valor médio dos usos de vagas do estacionamento
 	 */
 	public double valorMedioPorUso() {
@@ -179,9 +181,12 @@ public class Estacionamento{
         }
 		return mediaPorUso;
 	}
-	
+
 	//#endregion
 
+	/**
+	 * Override toString
+	 */
 	@Override
 	public String toString(){
 		return this.nome;
@@ -201,6 +206,7 @@ public class Estacionamento{
     }
 
 	/**
+	 * Valor médio dos usos de vagas pr clientes horistas
 	 * @return Valor médio dos usos de vagas pr clientes horistas
 	 */
 	public double valorMedio(){
@@ -217,11 +223,15 @@ public class Estacionamento{
 	}
 
 	//#region getter e setters
+	/**
+	 * Getters and Setters
+	 */
 	public Integer getId(){
 		return this.id;
 	}
 
 	/**
+	 * Um mapa com as vagas do estacionamento
 	 * @return Um mapa com as vagas do estacionamento
 	 */
 	public Map<Integer, Vaga> getVagas(){
@@ -229,6 +239,7 @@ public class Estacionamento{
 	}
 
 	/**
+	 * Uma lista com todos os cliente do estacionamento
 	 * @return Uma lista com todos os cliente do estacionamento
 	 */
 	public List<Cliente> getClientes(){
