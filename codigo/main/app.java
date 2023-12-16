@@ -9,6 +9,11 @@ import interfaces.ICategoriaCliente;
 
 public class app {
     
+    
+    /** 
+     * @param args[]
+     * @throws IOException
+     */
     public static void main(String args[]) throws IOException{
         try{
             carregarDados();
