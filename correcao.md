@@ -8,6 +8,9 @@
   - Documentação: 1,5/3 pontos;
   - Tarefas nas aulas: 5 pontos;
   - Atraso nos artefatos: desconto de 1 a 4 pontos por semana.
+  - 01/11 (Gabriel, Matheus Vinicius)
+  - 08/11 (Matheus Martins)
+  - 15/11 (Matheus Martins)
 
 ## Requisitos
 
